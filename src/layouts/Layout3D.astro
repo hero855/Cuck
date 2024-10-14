@@ -1,0 +1,103 @@
+---
+import { NavigationMenuDemo } from '@/components/Navigation'
+import { Button } from '@/components/ui/button'
+import { ViewTransitions } from 'astro:transitions'
+import '@/styles/globals.css'
+interface Props {
+    title: string
+    mini?: boolean
+}
+
+const { title, mini } = Astro.props
+---
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="description" content="Astro description" />
+        <meta name="viewport" content="width=device-width" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <meta name="generator" content={Astro.generator} />
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"
+            integrity="sha512-WFN04846sdKMIP5LKNphMaWzU7YpMyCU245etK3g/2ARYbPK9Ub18eG+ljU96qKRCWh+quCY7yefSmlkQw1ANQ=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"></script>
+        <!-- <script>
+            import Lenis from 'lenis'
+            import Snap from 'lenis/snap'
+            import { $section } from './../sectionStore.ts'
+
+            const lenis = new Lenis({
+                wrapper: document.body,
+            })
+
+            function raf(time: number) {
+                lenis.raf(time)
+                requestAnimationFrame(raf)
+            }
+
+            requestAnimationFrame(raf)
+
+            const snap = new Snap(lenis, {
+                lerp: 0.05,
+                onSnapStart: e => $section.set(e.value / window.innerHeight),
+            })
+            const defineSnap = () => {
+                snap.add(window.innerHeight * 0)
+                snap.add(window.innerHeight * 1)
+                snap.add(window.innerHeight * 2)
+                snap.add(window.innerHeight * 3)
+                snap.add(window.innerHeight * 4)
+                snap.add(window.innerHeight * 5)
+                snap.add(window.innerHeight * 6)
+                snap.add(window.innerHeight * 7)
+                snap.add(window.innerHeight * 8)
+                snap.add(window.innerHeight * 9)
+                snap.add(window.innerHeight * 10)
+            }
+
+            defineSnap()
+            // window.addEventListener('resize', defineSnap)
+        </script>
+        <style>
+            html.lenis,
+            html.lenis body {
+                height: auto;
+            }
+
+            .lenis.lenis-smooth {
+                scroll-behavior: auto !important;
+            }
+
+            .lenis.lenis-smooth [data-lenis-prevent] {
+                overscroll-behavior: contain;
+            }
+
+            .lenis.lenis-stopped {
+                overflow: hidden;
+            }
+
+            .lenis.lenis-smooth iframe {
+                pointer-events: none;
+            }
+        </style> -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&display=swap"
+            rel="stylesheet"
+        />
+        <title>{title}</title>
+    </head>
+    <body
+        class="bg-white font-inconsolata selection:bg-green-400 selection:text-white"
+    >
+        <slot />
+    </body>
+</html>

@@ -1,0 +1,172 @@
+---
+import '@/styles/globals.css'
+---
+
+<body style="background: #000">
+    <canvas></canvas>
+</body>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const canvas = document.getElementsByTagName('canvas').item(0)
+        if (!canvas) return
+        const ctx = canvas.getContext('2d')
+        if (!ctx) return
+
+        let width, height, scaledWidth, scaledHeight, imageData, buf8, data32
+        let time = 0
+        const scale = 0.25 // Render at 1/4 resolution
+        let resizeTimeout
+
+        function resize() {
+            const newWidth = window.innerWidth
+            const newHeight = window.innerHeight
+            const newScaledWidth = Math.floor(newWidth * scale)
+            const newScaledHeight = Math.floor(newHeight * scale)
+
+            // Only update if dimensions have changed
+            if (
+                newScaledWidth !== scaledWidth ||
+                newScaledHeight !== scaledHeight
+            ) {
+                width = canvas.width = newWidth
+                height = canvas.height = newHeight
+                scaledWidth = newScaledWidth
+                scaledHeight = newScaledHeight
+
+                // Create a new ImageData object
+                const newImageData = ctx.createImageData(
+                    scaledWidth,
+                    scaledHeight
+                )
+                buf8 = newImageData.data
+                data32 = new Uint32Array(buf8.buffer)
+
+                // Copy old data if it exists
+                if (imageData) {
+                    const minWidth = Math.min(imageData.width, scaledWidth)
+                    const minHeight = Math.min(imageData.height, scaledHeight)
+                    for (let y = 0; y < minHeight; y++) {
+                        for (let x = 0; x < minWidth; x++) {
+                            const index = y * scaledWidth + x
+                            data32[index] = new Uint32Array(
+                                imageData.data.buffer
+                            )[y * imageData.width + x]
+                        }
+                    }
+                }
+
+                imageData = newImageData
+
+                // Immediately draw the current state to prevent black flash
+                ctx.putImageData(imageData, 0, 0)
+                ctx.imageSmoothingEnabled = false
+                ctx.drawImage(
+                    canvas,
+                    0,
+                    0,
+                    scaledWidth,
+                    scaledHeight,
+                    0,
+                    0,
+                    width,
+                    height
+                )
+            }
+        }
+
+        // Web Worker code (same as before)
+        const worker = new Worker(
+            URL.createObjectURL(
+                new Blob(
+                    [
+                        `
+            function thinFilmInterference(x, y, time) {
+                const scale = 0.02
+                const speed = 0.1
+                const thickness =
+                    (Math.sin(x * scale + time * speed) +
+                        Math.sin(y * scale + time * speed) +
+                        Math.sin((x + y) * scale * 0.5 + time * speed * 1.5)) /
+                        3 +
+                    0.5
+
+                const hue = (thickness * 360 + time * 10) % 360
+                const chroma = 0.1 + thickness * 0.15
+                const lightness = 0.4 + thickness * 0.4
+
+                return oklchToRgb(lightness, chroma, hue)
+            }
+
+            function oklchToRgb(l, c, h) {
+                const rad = (h * Math.PI) / 180
+                const a = c * Math.cos(rad)
+                const b = c * Math.sin(rad)
+
+                const r = Math.max(0, Math.min(255, Math.round((l + 0.3963 * a + 0.2158 * b) * 255)))
+                const g = Math.max(0, Math.min(255, Math.round((l - 0.1055 * a - 0.0638 * b) * 255)))
+                const bl = Math.max(0, Math.min(255, Math.round((l - 0.0894 * a - 1.2914 * b) * 255)))
+
+                return (255 << 24) | (bl << 16) | (g << 8) | r
+            }
+
+            self.onmessage = function(e) {
+                const { width, height, time } = e.data
+                const buffer = new Uint32Array(width * height)
+
+                for (let y = 0; y < height; y++) {
+                    for (let x = 0; x < width; x++) {
+                        buffer[y * width + x] = thinFilmInterference(x, y, time)
+                    }
+                }
+
+                self.postMessage({ buffer: buffer.buffer }, [buffer.buffer])
+            }
+        `,
+                    ],
+                    { type: 'application/javascript' }
+                )
+            )
+        )
+
+        function draw() {
+            worker.postMessage({
+                width: scaledWidth,
+                height: scaledHeight,
+                time,
+            })
+
+            worker.onmessage = function (e) {
+                const newData32 = new Uint32Array(e.data.buffer)
+                // Ensure we don't copy more data than we have space for
+                data32.set(newData32.subarray(0, data32.length))
+                ctx.putImageData(imageData, 0, 0)
+                ctx.imageSmoothingEnabled = false
+                ctx.drawImage(
+                    canvas,
+                    0,
+                    0,
+                    scaledWidth,
+                    scaledHeight,
+                    0,
+                    0,
+                    width,
+                    height
+                )
+
+                time += 0.05
+                requestAnimationFrame(draw)
+            }
+        }
+
+        // Initialize and start animation
+        resize()
+        draw()
+
+        // Debounce resize event
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout)
+            resizeTimeout = setTimeout(resize, 250) // Wait for 250ms after last resize event
+        })
+    })
+</script>

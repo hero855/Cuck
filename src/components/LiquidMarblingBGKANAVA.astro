@@ -1,0 +1,173 @@
+---
+import '@/styles/globals.css'
+---
+
+<div
+    class="absolute inset-0 p-0 m-0 overflow-hidden translate-y-[10%] -translate-x-[3%] size-full -z-10"
+    id="container"
+>
+</div>
+<svg class="absolute inset-0 size-full -z-10">
+    <filter id="svgFilter">
+        <feTurbulence
+            id="turbulence"
+            type="turbulence"
+            baseFrequency="0.009"
+            numOctaves="5"></feTurbulence>
+        <feDisplacementMap id="displacement" in="SourceGraphic" scale="200"
+        ></feDisplacementMap>
+    </filter>
+</svg>
+<slot />
+
+<!-- type="fractalNoise" -->
+<!-- type="turbulence" -->
+<style>
+    :root {
+        --primaryHeaderColor: rgb(230, 13, 13);
+    }
+
+    #container {
+        filter: url(#svgFilter);
+        /* mask: linear-gradient(transparent, black, black, black, black, black);
+        backdrop-filter: blur(8px); */
+    }
+</style>
+
+<script>
+    import Konva from 'konva'
+    import chroma from 'chroma-js'
+
+    const NUM_OF_STARS = 20
+    const NUM_OF_LINKS = 30
+    const INIT_MAX_SPEED = 1
+    const BG_COLOR = chroma('#d3b861')
+    const PARTICLES_COLOR = [
+        chroma('#50626e'),
+        chroma('#aca9a0'),
+        chroma('#f5f5f5'),
+        chroma('#d0a65a'),
+    ]
+    const LINE_WIDTH = 40
+
+    const starArray: Star[] = []
+    const starLinks: Konva.Line[] = []
+
+    type Star = {
+        konvaObj: Konva.Circle
+        color: chroma.Color
+        angle: number
+        startAngle: number
+        speed: number
+        links: number[]
+    }
+
+    const container = document.getElementById('container')
+
+    const stage = new Konva.Stage({
+        container: 'container',
+        width: container?.clientWidth,
+        height: container?.clientHeight,
+    })
+
+    const canvas = document.getElementById('container')
+    if (canvas) canvas.style.backgroundColor = BG_COLOR.hex()
+
+    const baseLayer = new Konva.Layer()
+    const starsLayer = new Konva.Layer()
+    const linksLayer = new Konva.Layer()
+
+    let numOfStars = Math.floor(stage.width() / 2)
+    const starsIndexes = Array.from(Array(numOfStars)).map((_, i) => i)
+
+    while (numOfStars--) {
+        const startAngle = Math.floor(Math.random() * 360)
+        const color =
+            PARTICLES_COLOR[Math.floor(Math.random() * PARTICLES_COLOR.length)]
+
+        const links = starsIndexes.splice(0, NUM_OF_LINKS)
+
+        starArray.push({
+            color,
+            links,
+            startAngle,
+            angle: startAngle,
+            speed: (Math.floor(Math.random() * INIT_MAX_SPEED) + 1) / 15,
+
+            konvaObj: new Konva.Circle({
+                x: Math.floor(Math.random() * stage.width()),
+                y: Math.floor(Math.random() * stage.height()),
+                sides: 6,
+                radius: 5,
+                strokeWidth: 4,
+                fill: color.alpha(0.2).hex(),
+            }),
+        })
+    }
+
+    starArray.forEach((star) => {
+        star.links.forEach(() => {
+            const line = new Konva.Line()
+            starLinks.push(line)
+            starsLayer.add(line)
+        })
+
+        starsLayer.add(star.konvaObj)
+    })
+
+    stage.add(baseLayer)
+    stage.add(linksLayer)
+    stage.add(starsLayer)
+
+    const anim = new Konva.Animation((frame) => {
+        if (!frame) return
+
+        starArray.forEach((star) => {
+            if (
+                star.konvaObj.y() < 0 ||
+                star.konvaObj.y() > stage.height() ||
+                star.konvaObj.x() < 0 ||
+                star.konvaObj.x() > stage.width()
+            ) {
+                star.angle = star.angle + 90 + (star.angle % 90)
+                star.startAngle = star.angle
+            } else if (star.angle !== star.startAngle) {
+                star.angle = star.startAngle
+            }
+
+            star.konvaObj.move({
+                x: star.speed * Math.sin(star.angle * (Math.PI / 180)) * -1,
+                y: star.speed * Math.cos(star.angle * (Math.PI / 180)),
+            })
+
+            star.links.forEach((linkID, i) => {
+                const linkEl = starLinks[linkID]
+                const star1 = star.konvaObj
+                const star2 = starArray[i].konvaObj
+                const dist = Math.sqrt(
+                    (star2.x() - star1.x()) ** 2 + (star2.y() - star1.y()) ** 2
+                )
+                linkEl.points([star1.x(), star1.y(), star2.x(), star2.y()])
+                linkEl.stroke(
+                    star.color
+                        .mix(starArray[i].color)
+                        .saturate(1 - dist / 150)
+                        .alpha(1 - dist / 150)
+                        .hex()
+                )
+                linkEl.strokeWidth(50)
+            })
+        })
+    }, starsLayer)
+
+    anim.start()
+
+    // window.addEventListener('resize', function () {
+    //     const canvas = document.getElementById(
+    //         'mainstage'
+    //     ) as HTMLCanvasElement | null
+    //     if (!canvas) return
+    //     canvas.width = canvas.clientWidth
+    //     canvas.height = canvas.clientHeight
+    // })
+</script>

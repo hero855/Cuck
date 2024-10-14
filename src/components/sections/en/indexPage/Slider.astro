@@ -1,0 +1,625 @@
+---
+import LiquidMarblingBG from '@/components/LiquidMarblingBG.astro'
+import LiquidMarblingBGKANAVA from '@/components/LiquidMarblingBGKANAVA.astro'
+
+/*
+
+gradients:
+
+    background: rgb(229,232,236);
+    background: linear-gradient(90deg, rgba(229,232,236,1) 0%, rgba(229,232,236,1) 35%, rgba(231,217,219,1) 74%, rgba(231,221,224,1) 100%);
+
+
+	background: linear-gradient(-45deg, blue -30%, transparent 80%), linear-gradient(45deg, darkred 20%, crimson, darkorange 60%, gold, bisque)
+
+    
+    bg-[linear-gradient(45deg,white_25%,transparent_25%,transparent_100%),linear-gradient(135deg,white_25%,transparent_25%,transparent_100%),linear-gradient(135deg,transparent_0%,transparent_75%,white_75%),linear-gradient(45deg,transparent_0%,transparent_75%,white_75%),linear-gradient(45deg,white_25%,lightgray_25%,transparent_28%,transparent_100%),linear-gradient(135deg,white_25%,lightgray_25%,transparent_28%,transparent_100%),linear-gradient(90deg,rgba(229,232,236,1)_0%,rgba(229,232,236,1)_35%,rgba(231,217,219,1)_74%,rgba(231,221,224,1)_100%)]
+
+
+
+colored bg for cards: 
+    after:transition-all relative after:absolute after:inset-0 group-data-[current=4]:bg-transparent group-data-[current=4]:after:bg-green-400 after:-z-10 after:[mask-image:radial-gradient(in_oklch_ellipse_at_80%_80%,#fb923c,transparent_80%),url('/svg/grain.svg')] after:[mask-repeat:no-repeat] after:[mask-position:left_top,left_bottom]
+*/
+---
+
+<section
+    class="relative flex flex-col w-full h-screen pb-5 overflow-hidden lg:pt-6 lg:pb-0 lg:h-screen"
+>
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.4/tiny-slider.css"
+    />
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.2/min/tiny-slider.js"
+    ></script>
+    <div
+        class="block group transition-colors lg:hidden data-[current=1]:bg-green-200 data-[current=2]:bg-orange-200 data-[current=3]:bg-green-200"
+    >
+        <ul id="my-slider">
+            <div class="container grid gap-4 px-4 py-5 h-fit">
+                <div class="flex items-center gap-4">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="w-8 h-8 text-primary"
+                        data-darkreader-inline-stroke=""
+                        style="--darkreader-inline-stroke: currentColor;"
+                    >
+                        <path
+                            class="fill-green-400"
+                            d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"
+                        ></path>
+                        <path
+                            d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"
+                        ></path>
+                    </svg>
+                    <h3 class="text-xl font-bold">100% Natural</h3>
+                </div>
+                <p class="text-muted-foreground">
+                    Our supplements are made with only the highest quality,
+                    all-natural ingredients sourced from sustainable farms.
+                </p>
+            </div>
+            <div class="container grid gap-4 px-4 py-5 h-fit">
+                <div class="flex items-center gap-4">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="w-8 h-8 text-primary"
+                        data-darkreader-inline-stroke=""
+                        style="--darkreader-inline-stroke: currentColor;"
+                    >
+                        <path d="M12 4V2"></path>
+                        <path
+                            class="fill-orange-400"
+                            d="M5 10v4a7.004 7.004 0 0 0 5.277 6.787c.412.104.802.292 1.102.592L12 22l.621-.621c.3-.3.69-.488 1.102-.592A7.003 7.003 0 0 0 19 14v-4"
+                        ></path>
+                        <path
+                            class="fill-orange-900"
+                            d="M12 4C8 4 4.5 6 4 8c-.243.97-.919 1.952-2 3 1.31-.082 1.972-.29 3-1 .54.92.982 1.356 2 2 1.452-.647 1.954-1.098 2.5-2 .595.995 1.151 1.427 2.5 2 1.31-.621 1.862-1.058 2.5-2 .629.977 1.162 1.423 2.5 2 1.209-.548 1.68-.967 2-2 1.032.916 1.683 1.157 3 1-1.297-1.036-1.758-2.03-2-3-.5-2-4-4-8-4Z"
+                        ></path>
+                    </svg>
+                    <h3 class="text-xl font-bold">Nutrient-Rich</h3>
+                </div>
+                <p class="text-muted-foreground">
+                    Each serving is packed with essential vitamins, minerals,
+                    and antioxidants to support your overall health.
+                </p>
+            </div>
+            <div class="container grid gap-4 px-4 py-5 h-fit">
+                <div class="flex items-center gap-4">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="w-8 h-8 text-primary"
+                        data-darkreader-inline-stroke=""
+                        style="--darkreader-inline-stroke: currentColor;"
+                    >
+                        <path
+                            class="fill-green-400"
+                            d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"
+                        ></path>
+                        <path
+                            d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"
+                        ></path>
+                    </svg>
+                    <h3 class="text-xl font-bold">Sustainable</h3>
+                </div>
+                <p class="text-muted-foreground">
+                    Our ingredients are ethically sourced from local, organic
+                    farms to minimize our environmental impact.
+                </p>
+            </div>
+            <div class="h-[5.5lh] py-5" id="test">...</div>
+        </ul>
+
+        <script>
+            import { $section } from '@/sectionStore'
+            import { slide } from 'astro:transitions'
+            import { tns, type TinySliderInfo } from 'tiny-slider'
+            var slider = tns({
+                container: '#my-slider',
+                gutter: 20,
+                loop: true,
+                controls: false,
+                nav: false,
+                axis: 'vertical',
+                autoplay: true,
+                autoplayTimeout: 5000,
+                autoplayButton: false,
+                autoplayButtonOutput: false,
+            })
+
+            const onSlide = (e: TinySliderInfo & { displayIndex: number }) => {
+                const sliderWrapper =
+                    document.getElementById('my-slider')?.parentElement
+                        ?.parentElement?.parentElement?.parentElement
+
+                const prosList = document.getElementById('pros-list')
+                const prosListMin = document.getElementById('pros-list-mini')
+
+                if (!sliderWrapper || !prosList || !prosListMin) return
+
+                sliderWrapper.dataset.current = e.displayIndex.toString()
+                prosList.dataset.current = e.displayIndex.toString()
+                prosListMin.dataset.current = e.displayIndex.toString()
+            }
+
+            const applyListeners = (element: HTMLElement, id: number) => {
+                element.addEventListener('mouseenter', () => {
+                    slider.pause()
+                    slider.goTo(id)
+                })
+                element.addEventListener('mouseleave', slider.play)
+            }
+
+            const pros1 = document.getElementById('pros-1')
+            const pros2 = document.getElementById('pros-2')
+            const pros3 = document.getElementById('pros-3')
+
+            const pros1MiniTrigger = document.getElementById(
+                'pros-1-mini-trigger'
+            )
+            const pros2MiniTrigger = document.getElementById(
+                'pros-2-mini-trigger'
+            )
+            const pros3MiniTrigger = document.getElementById(
+                'pros-3-mini-trigger'
+            )
+
+            if (
+                pros1 &&
+                pros2 &&
+                pros3 &&
+                pros1MiniTrigger &&
+                pros2MiniTrigger &&
+                pros3MiniTrigger
+            ) {
+                applyListeners(pros1, 0)
+                applyListeners(pros2, 1)
+                applyListeners(pros3, 2)
+                applyListeners(pros1MiniTrigger, 0)
+                applyListeners(pros2MiniTrigger, 1)
+                applyListeners(pros3MiniTrigger, 2)
+            }
+            /* @ts-ignore */
+            onSlide({ displayIndex: 1, indexCached: 4 })
+            /* @ts-ignore */
+            slider.events.on('transitionStart', onSlide)
+
+            $section.subscribe(id => void (id === 1 && slider.goTo(1)))
+
+            // remove function binding
+            // slider.events.off('transitionStart', console.log);
+        </script>
+    </div>
+
+    <LiquidMarblingBG>
+        <div class="hidden w-full lg:h-[25vh] lg:block slider-section">
+            <div
+                class="container grid w-full gap-6 px-4 group md:px-6 lg:grid-cols-3 lg:gap-12"
+                id="pros-list"
+                data-current="1"
+            >
+                <!-- FIXME: implement group-[&:not(data-current=2)]:bg[url(svg)] -->
+                <div
+                    class="grid gap-4 rounded shadow-lg p-5 bg-opacity-45 h-fit backdrop-blur-lg bg-white group-data-[current=2]:bg-[url('/svg/grain.svg')] group-data-[current=3]:bg-[url('/svg/grain.svg')] group-data-[current=4]:bg-[url('/svg/grain.svg')] group-data-[current=4]:bg-transparent group-data-[current=1]:bg-yellow-300 group-data-[current=1]:bg-opacity-90 group-data-[current=4]:bg-opacity-90 transition-all"
+                    id="pros-1"
+                >
+                    <div class="z-10 flex items-center gap-4">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="w-8 h-8 text-primary"
+                            data-darkreader-inline-stroke=""
+                            style="--darkreader-inline-stroke: currentColor;"
+                        >
+                            <path
+                                class="group-data-[current=1]:fill-green-400 fill-transparent transition-colors"
+                                d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"
+                            ></path>
+                            <path
+                                d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"
+                            ></path>
+                        </svg>
+                        <h3 class="text-xl font-bold text-black">
+                            100% Natural
+                        </h3>
+                    </div>
+                    <p class="text-black">
+                        Our supplements are made with only the highest quality,
+                        all-natural ingredients sourced from sustainable farms.
+                    </p>
+                    <div></div>
+                </div>
+                <div
+                    class="grid gap-4 rounded shadow-lg p-5 bg-opacity-45 h-fit backdrop-blur-lg bg-white group-data-[current=1]:bg-[url('/svg/grain.svg')] group-data-[current=3]:bg-[url('/svg/grain.svg')] group-data-[current=4]:bg-[url('/svg/grain.svg')] group-data-[current=4]:bg-transparent group-data-[current=2]:bg-yellow-300 group-data-[current=2]:bg-opacity-90 group-data-[current=4]:bg-opacity-90 transition-all"
+                    id="pros-2"
+                >
+                    <div class="flex items-center gap-4">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="w-8 h-8 text-primary"
+                            data-darkreader-inline-stroke=""
+                            style="--darkreader-inline-stroke: currentColor;"
+                        >
+                            <path d="M12 4V2"></path>
+                            <path
+                                class="group-data-[current=2]:fill-orange-400 fill-transparent transition-colors"
+                                d="M5 10v4a7.004 7.004 0 0 0 5.277 6.787c.412.104.802.292 1.102.592L12 22l.621-.621c.3-.3.69-.488 1.102-.592A7.003 7.003 0 0 0 19 14v-4"
+                            ></path>
+                            <path
+                                class="group-data-[current=2]:fill-orange-900 fill-transparent transition-colors"
+                                d="M12 4C8 4 4.5 6 4 8c-.243.97-.919 1.952-2 3 1.31-.082 1.972-.29 3-1 .54.92.982 1.356 2 2 1.452-.647 1.954-1.098 2.5-2 .595.995 1.151 1.427 2.5 2 1.31-.621 1.862-1.058 2.5-2 .629.977 1.162 1.423 2.5 2 1.209-.548 1.68-.967 2-2 1.032.916 1.683 1.157 3 1-1.297-1.036-1.758-2.03-2-3-.5-2-4-4-8-4Z"
+                            ></path>
+                        </svg>
+                        <h3 class="text-xl font-bold">Nutrient-Rich</h3>
+                    </div>
+                    <p class="text-black">
+                        Each serving is packed with essential vitamins,
+                        minerals, and antioxidants to support your overall
+                        health.
+                    </p>
+                </div>
+                <div
+                    class="grid gap-4 rounded shadow-lg p-5 bg-opacity-45 h-fit backdrop-blur-lg bg-white group-data-[current=1]:bg-[url('/svg/grain.svg')] group-data-[current=2]:bg-[url('/svg/grain.svg')] group-data-[current=4]:bg-[url('/svg/grain.svg')] group-data-[current=4]:bg-transparent group-data-[current=3]:bg-yellow-400 group-data-[current=3]:bg-opacity-90 group-data-[current=4]:bg-opacity-90 transition-all"
+                    id="pros-3"
+                >
+                    <div class="flex items-center gap-4">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            xmlns:xlink="http://www.w3.org/1999/xlink"
+                            width="24"
+                            height="24"
+                            version="1.1"
+                            class="w-8 h-8 text-primary fill-transparent transition-colors group-data-[current=3]:bg-white rounded-full"
+                            viewBox="0 0 512 512"
+                            xml:space="preserve"
+                        >
+                            <path
+                                fill="black"
+                                d="M255.996,118.256c-15.289,0-27.685,12.406-27.685,27.704c0,15.288,12.396,27.685,27.685,27.685c15.297,0,27.712-12.397,27.712-27.685C283.708,130.663,271.293,118.256,255.996,118.256z"
+                            ></path>
+                            <path
+                                fill="black"
+                                d="M491.866,156.348c-12.879-30.461-31.371-57.905-54.854-81.36c-23.455-23.473-50.89-41.974-81.36-54.853c-31.55-13.352-65.18-20.134-99.656-20.134c-34.468,0-68.098,6.783-99.647,20.134c-30.461,12.879-57.897,31.38-81.361,54.853c-23.472,23.455-41.965,50.899-54.844,81.36C6.792,187.899,0,221.519,0,256.005c0,34.468,6.792,68.098,20.144,99.647c12.879,30.461,31.372,57.897,54.844,81.361c23.464,23.481,50.9,41.974,81.361,54.852c31.549,13.352,65.179,20.134,99.647,20.134c34.477,0,68.106-6.782,99.656-20.134c30.47-12.879,57.905-31.371,81.369-54.852c23.473-23.464,41.965-50.9,54.844-81.361c13.351-31.549,20.144-65.179,20.134-99.647C512.009,221.519,505.217,187.899,491.866,156.348z M255.996,393.735c-15.289,0-27.685-12.396-27.685-27.686c0-15.297,12.396-27.685,27.685-27.685c15.297,0,27.712,12.388,27.712,27.685C283.708,381.339,271.293,393.735,255.996,393.735z M333.643,223.598c-19.868,19.867-47.321,32.166-77.647,32.166c-60.914,0-110.286,49.374-110.286,110.286c0,57.406,43.866,104.565,99.906,109.796c-116.729-5.427-209.71-101.763-209.71-219.84c0-121.558,98.542-220.099,220.091-220.099v0.223c30.326,0,57.78,12.298,77.647,32.165c19.876,19.885,32.166,47.338,32.166,77.666C365.809,176.269,353.519,203.722,333.643,223.598z"
+                            ></path>
+                        </svg>
+                        <h3 class="text-xl font-bold">Sustainable</h3>
+                    </div>
+                    <p class="text-black">
+                        Our ingredients are ethically sourced from local,
+                        organic farms to minimize our environmental impact.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div
+            class="container grid gap-5 px-4 pt-5 overflow-x-visible overflow-y-clip lg:mt-0 md:px-6 lg:grid-cols-2 lg:gap-0 basis-full"
+        >
+            <div class="z-10 flex justify-center">
+                <div
+                    class="object-cover w-full mx-auto overflow-hidden bg-neutral-200 rounded-t-xl sm:size-full"
+                >
+                    <canvas id={`canvas3d`}></canvas>
+
+                    <script>
+                        /*  emitEvent: ƒ emitEvent(s)
+                        emitEventReverse: ƒ emitEventReverse(s)
+                        intensity: undefined
+                        name: "CUCKmber"
+                        page: "Scene 1"
+                        parentUuid: "2d3a9611-bfbb-43b3-ab02-adb4eaada2f2"
+                        position: E {
+                            x: 1.9653399007029635, 
+                            y: 1.054589867591858, 
+                            z: -0.24195627868175507
+                        }
+                        rotation: ir {
+                            "isEuler": true,
+                            "_x": 2.8697173598094836,
+                            "_y": 1.1120978401053763,
+                            "_z": 1.6311621098990423,
+                            "_order": "XYZ"
+                        }
+                        scale: E {
+                            x: 1.856998085975647, 
+                            y: 0.5777410864830017, 
+                            z: 0.5777410268783569
+                        }
+                        type: "Mesh"
+                        uuid: "671f7e04-23c2-4bff-8bff-e93e13d76448"
+                        visible: bool                                        */
+
+                        import { Application } from '@splinetool/runtime'
+                        import scope from 'astro:scope'
+
+                        const CUCK_SCENE_URI =
+                            'https://prod.spline.design/LCB0iCzduGXLMKYX/scene.splinecode'
+                        const HOVER_SCENE_URI =
+                            'https://prod.spline.design/qwFBCPU8opEFsdXi/scene.splinecode'
+
+                        const canvas = document.getElementById(
+                            `canvas3d`
+                        ) as HTMLCanvasElement | null
+
+                        if (canvas) {
+                            const app = new Application(canvas)
+                            app.load(HOVER_SCENE_URI).then(() => {
+                                const CUCK = app.findObjectById(
+                                    '671f7e04-23c2-4bff-8bff-e93e13d76448'
+                                )
+
+                                if (!CUCK) return
+
+                                console.log(CUCK)
+
+                                CUCK.position.x += Math.random() * 1
+                                app.setSize(550, 550)
+                            })
+                        }
+                    </script>
+                </div>
+            </div>
+            <div
+                class="grid grid-rows-[minmax(50px,auto)_auto] lg:justify-center lg:pl-12"
+            >
+                <div></div>
+                <div
+                    class="relative z-0 flex flex-col items-center after:top-0 after:absolute after:size-10 after:bg-white after:-z-10 after:w-screen after:h-screen after:-translate-x-14 after:-translate-y-8"
+                >
+                    <div>
+                        <h2
+                            class="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl"
+                        >
+                            Crafted with Care, Powered by Nature
+                        </h2>
+                        <p
+                            class="max-w-[600px] text-muted-foreground md:text-xl mt-6"
+                        >
+                            Our supplements are made with only the finest,
+                            all-natural ingredients, carefully selected to
+                            provide your body with the essential nutrients it
+                            needs to thrive.
+                        </p>
+                    </div>
+                    <div
+                        class="grid w-fit [grid:auto-flow_120px_/_repeat(2,120px)] place-items-center rotate-45 group"
+                        id="pros-list-mini"
+                        data-current="1"
+                    >
+                        <div></div>
+                        <li
+                            class="grid place-items-center px-6 py-3 aspect-square justify-center w-full order-3
+                            
+                            bg-[linear-gradient(90deg,rgba(229,232,236,1)_0%,rgba(229,232,236,1)_35%,rgba(231,217,219,1)_74%,rgba(231,221,224,1)_100%)]
+                            shadow-inner
+                            
+                            after:w-full
+                            after:h-px
+                            after:scale-x-[2]
+                            after:top-0
+                            after:left-1/3
+                            after:bg-[linear-gradient(to_right,transparent,lightgrey,transparent)]
+                            #after:bg-red-400
+                            after:absolute
+                            after:z-10
+                            
+                            before:w-full
+                            before:h-px
+                            before:scale-x-[3]
+                            before:bottom-0
+                            before:-right-1/2
+                            before:bg-[linear-gradient(to_right,transparent,lightgrey,transparent)]
+                            before:absolute
+                            before:z-10
+                            before:-rotate-90"
+                        >
+                            <div
+                                class="grid place-items-center gap-3 -rotate-45 w-[141%]"
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="40"
+                                    height="40"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    class="size-10 text-primary"
+                                    data-darkreader-inline-stroke=""
+                                    style="--darkreader-inline-stroke: currentColor;"
+                                >
+                                    <path
+                                        d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"
+                                    ></path>
+                                    <path
+                                        d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"
+                                    ></path>
+                                </svg>
+                                <span
+                                    class="text-lg font-semibold leading-tight text-center"
+                                    >Organic</span
+                                >
+                            </div>
+                            <label
+                                class="absolute size-1/2 bg-white opacity-100 group-data-[current=1]:opacity-20 transition-[opacity,background-color]"
+                                id="pros-1-mini-trigger"></label>
+                        </li>
+                        <li
+                            class="grid place-items-center order-last px-6 py-3 aspect-square justify-center w-full
+                            
+                                bg-[linear-gradient(90deg,rgba(229,232,236,1)_0%,rgba(229,232,236,1)_35%,rgba(231,217,219,1)_74%,rgba(231,221,224,1)_100%)]
+                            
+                                shadow-inner
+                                
+                                after:absolute
+                                after:w-1/2
+                                after:h-px
+                                after:scale-x-[3]
+                                after:top-1/2
+                                after:-left-1/3
+                                after:bg-[linear-gradient(to_right,transparent,lightgrey,transparent)]
+                                after:z-10
+                                
+                                before:absolute
+                                before:w-full
+                                before:h-px
+                                before:scale-x-[3]
+                                before:top-1/2
+                                before:right-0
+                                before:bg-[linear-gradient(to_right,transparent,lightgrey,transparent)]
+                                before:rotate-90
+                                before:z-10"
+                            id="pros-2-mini"
+                        >
+                            <div
+                                class="grid place-items-center gap-3 -rotate-45 w-[141%]"
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="40"
+                                    height="40"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    class="size-10 text-primary"
+                                    data-darkreader-inline-stroke=""
+                                    style="--darkreader-inline-stroke: currentColor;"
+                                >
+                                    <path d="M12 4V2"></path>
+                                    <path
+                                        d="M5 10v4a7.004 7.004 0 0 0 5.277 6.787c.412.104.802.292 1.102.592L12 22l.621-.621c.3-.3.69-.488 1.102-.592A7.003 7.003 0 0 0 19 14v-4"
+                                    ></path>
+                                    <path
+                                        d="M12 4C8 4 4.5 6 4 8c-.243.97-.919 1.952-2 3 1.31-.082 1.972-.29 3-1 .54.92.982 1.356 2 2 1.452-.647 1.954-1.098 2.5-2 .595.995 1.151 1.427 2.5 2 1.31-.621 1.862-1.058 2.5-2 .629.977 1.162 1.423 2.5 2 1.209-.548 1.68-.967 2-2 1.032.916 1.683 1.157 3 1-1.297-1.036-1.758-2.03-2-3-.5-2-4-4-8-4Z"
+                                    ></path>
+                                </svg>
+                                <span
+                                    class="text-lg font-semibold leading-tight text-center"
+                                    >High-potency</span
+                                >
+                            </div>
+                            <label
+                                class="absolute size-1/2 bg-white opacity-100 group-data-[current=2]:opacity-0 transition-[opacity,background-color]"
+                                id="pros-2-mini-trigger"></label>
+                        </li>
+                        <li
+                            class="grid place-items-center px-6 py-3 aspect-square justify-center w-full
+                            
+                            bg-[linear-gradient(90deg,rgba(229,232,236,1)_0%,rgba(229,232,236,1)_35%,rgba(231,217,219,1)_74%,rgba(231,221,224,1)_100%)]
+                            
+                            shadow-inner
+                            
+                            after:w-full
+                            after:h-px
+                            after:scale-x-[2]
+                            after:top-2/3
+                            after:-left-1/2
+                            after:bg-[linear-gradient(to_right,transparent,lightgrey,transparent)]
+                            after:absolute
+                            after:rotate-90
+                            after:z-10
+                            
+                            before:w-full
+                            before:h-px
+                            before:scale-x-[3]
+                            before:bottom-0
+                            before:left-0
+                            before:bg-[linear-gradient(to_right,transparent,lightgrey,transparent)]
+                            before:absolute
+                            before:z-10"
+                            id="pros-3-mini"
+                        >
+                            <div
+                                class="grid place-items-center gap-3 -rotate-45 w-[141%]"
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                                    width="24"
+                                    height="24"
+                                    version="1.1"
+                                    class="w-8 h-8 text-primary"
+                                    viewBox="0 0 512 512"
+                                    xml:space="preserve"
+                                >
+                                    <path
+                                        fill="black"
+                                        d="M255.996,118.256c-15.289,0-27.685,12.406-27.685,27.704c0,15.288,12.396,27.685,27.685,27.685c15.297,0,27.712-12.397,27.712-27.685C283.708,130.663,271.293,118.256,255.996,118.256z"
+                                    ></path>
+                                    <path
+                                        fill="black"
+                                        d="M491.866,156.348c-12.879-30.461-31.371-57.905-54.854-81.36c-23.455-23.473-50.89-41.974-81.36-54.853c-31.55-13.352-65.18-20.134-99.656-20.134c-34.468,0-68.098,6.783-99.647,20.134c-30.461,12.879-57.897,31.38-81.361,54.853c-23.472,23.455-41.965,50.899-54.844,81.36C6.792,187.899,0,221.519,0,256.005c0,34.468,6.792,68.098,20.144,99.647c12.879,30.461,31.372,57.897,54.844,81.361c23.464,23.481,50.9,41.974,81.361,54.852c31.549,13.352,65.179,20.134,99.647,20.134c34.477,0,68.106-6.782,99.656-20.134c30.47-12.879,57.905-31.371,81.369-54.852c23.473-23.464,41.965-50.9,54.844-81.361c13.351-31.549,20.144-65.179,20.134-99.647C512.009,221.519,505.217,187.899,491.866,156.348z M255.996,393.735c-15.289,0-27.685-12.396-27.685-27.686c0-15.297,12.396-27.685,27.685-27.685c15.297,0,27.712,12.388,27.712,27.685C283.708,381.339,271.293,393.735,255.996,393.735z M333.643,223.598c-19.868,19.867-47.321,32.166-77.647,32.166c-60.914,0-110.286,49.374-110.286,110.286c0,57.406,43.866,104.565,99.906,109.796c-116.729-5.427-209.71-101.763-209.71-219.84c0-121.558,98.542-220.099,220.091-220.099v0.223c30.326,0,57.78,12.298,77.647,32.165c19.876,19.885,32.166,47.338,32.166,77.666C365.809,176.269,353.519,203.722,333.643,223.598z"
+                                    ></path>
+                                </svg>
+                                <span
+                                    class="text-lg font-semibold leading-tight text-center"
+                                    >Sustainably<br />sourced</span
+                                >
+                            </div>
+                            <label
+                                class="absolute size-1/2 bg-white opacity-100 group-data-[current=3]:opacity-0 transition-[opacity,background-color]"
+                                id="pros-3-mini-trigger"></label>
+                        </li>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                ;(CSS.paintWorklet || paintWorklet).addModule(
+                    'smooth-corners.js'
+                )
+            </script>
+
+            <style>
+                .super-rounded {
+                    --smooth-corners: 4;
+                    background: linear-gradient(deeppink, orangered);
+                    mask-image: paint(smooth-corners);
+                }
+            </style>
+        </div>
+    </LiquidMarblingBG>
+</section>

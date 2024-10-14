@@ -1,0 +1,227 @@
+---
+interface Props {
+    name: string
+    details: string
+    cardOffset: number
+    isPlayerPreview?: boolean
+    v1?: boolean
+    v2?: boolean
+    v3?: boolean
+    v4?: boolean
+    v5?: boolean
+    v6?: boolean
+    v7?: boolean
+    v8?: boolean
+    v9?: boolean
+    v10?: boolean
+    v11?: boolean
+    v12?: boolean
+}
+
+/*
+relative grid gap-4 rounded shadow-lg p-5 bg-opacity-45
+                 h-fit backdrop-blur-lg opacity-100 lg:bg-white lg:group-data-[current=1]:bg-[url('/svg/grain.svg')] lg:group-data-[current=2]:bg-[url('/svg/grain.svg')] lg:group-data-[current=3]:bg-[url('/svg/grain.svg')] lg:group-data-[current=3]:bg-transparent group-data-[current=0]:bg-yellow-300 group-data-[current=0]:bg-opacity-90 lg:group-data-[current=3]:bg-opacity-90 transition-all
+*/
+
+const { name, details, cardOffset, isPlayerPreview, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12 } = Astro.props
+---
+
+{
+    !isPlayerPreview && v1 ? (
+        <div
+            class={`backdrop-blur-3xl rounded-lg p-5 pb-12 bg-[linear-gradient(to_top,transparent,transparent_30px,white_30px),url('/svg/grain.svg')] overflow-hidden ring ring-white space-y-2 min-w-64 shadow-lg max-w-lg`}
+            id={`pros-${cardOffset}`}
+        >
+            <div class="z-10 flex items-center gap-4">
+                <div class="shrink-0">
+                    <slot name="icon" />
+                </div>
+                <h3 class="text-xl font-bold text-black">
+                    {name}
+                </h3>
+            </div>
+            <p class="text-black text-pretty">
+                {details}
+            </p>
+        </div>
+    ) : <></>
+}
+
+
+
+
+
+{!isPlayerPreview && v2 ? (
+    <div
+        class={`backdrop-blur-3xl rounded-lg p-5 overflow-hidden space-y-2 min-w-64 shadow-lg max-w-lg`}
+        id={`pros-${cardOffset}`}
+    >
+        <div class="z-10 flex items-center gap-4">
+            <div class="shrink-0 *:*:stroke-slate-200">
+                <slot name="icon" />
+            </div>
+            <h3 class="text-xl font-bold text-slate-200">
+                {name}
+            </h3>
+        </div>
+        <p class="text-slate-200 text-pretty">
+            {details}
+        </p>
+    </div>
+) : <></>}
+
+
+
+
+
+{!isPlayerPreview && v3 ? <div
+    class={`backdrop-blur-3xl rounded-3xl border border-slate-600 p-2 space-y-1 overflow-hidden min-w-64 shadow-lg max-w-lg`}
+    id={`pros-${cardOffset}`}
+>
+    <div class="z-10 flex items-center gap-4 p-2">
+        <div class="shrink-0 *:*:stroke-white">
+            <slot name="icon" />
+        </div>
+        <h3 class="text-xl font-bold text-white">
+            {name}
+        </h3>
+    </div>
+    <p class="p-2 border rounded-t-lg rounded-b-2xl bg-opacity-40 text-slate-200 text-pretty bg-slate-600 border-slate-500">
+        {details}
+    </p>
+</div> 
+: <></>}
+
+
+
+
+
+{!isPlayerPreview && v4 ? <div
+    class={`backdrop-blur-3xl rounded-t-3xl rounded-b border border-slate-600 py-2 space-y-1 overflow-hidden min-w-64 shadow-lg max-w-lg`}
+    id={`pros-${cardOffset}`}
+>
+    <div class="z-10 flex items-center gap-4 px-4 py-2">
+        <div class="shrink-0 *:*:stroke-white">
+            <slot name="icon" />
+        </div>
+        <h3 class="text-xl font-bold text-white">
+            {name}
+        </h3>
+    </div>
+    <p class="px-4 py-2 border-y bg-opacity-40 text-slate-200 text-pretty bg-slate-600 border-slate-500">
+        {details}
+    </p>
+</div>  : <></>}
+
+
+
+
+
+
+
+
+{!isPlayerPreview && v5 ? <div
+    class={`relative backdrop-blur-3xl rounded-t-3xl rounded-b border border-slate-600 pt-6 pb-2 space-y-1 overflow-hidden min-w-64 shadow-lg max-w-lg`}
+    id={`pros-${cardOffset}`}
+>
+    <div class="absolute shrink-0 *:*:stroke-slate-200 bg-slate-900 p-1 rounded right-6 border border-slate-300 top-4">
+        <slot name="icon" />
+    </div>
+    <div class="px-4 py-2 space-y-2 border-y bg-opacity-40 bg-slate-600 border-slate-500">
+        <h3 class="text-xl font-bold text-white">
+            {name}
+        </h3>
+        <p class="text-slate-200 text-pretty">
+            {details}
+        </p>
+    </div>
+</div> : <></>}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{!isPlayerPreview && v6 ? <div
+    class={`relative backdrop-blur-3xl rounded-t-3xl rounded-b border border-slate-600 pt-6 pb-2 space-y-1 overflow-hidden min-w-64 shadow-lg max-w-lg`}
+    id={`pros-${cardOffset}`}
+>
+    <div class="absolute shrink-0 *:*:stroke-slate-200 bg-slate-900 p-1 rounded right-6 border border-slate-300 top-4">
+        <slot name="icon" />
+    </div>
+    <div class="px-4 py-2 space-y-2 border-y bg-opacity-40 bg-slate-600 border-slate-500">
+        <h3 class="text-xl font-bold text-white">
+            {name}
+        </h3>
+        <p class="text-slate-200 text-pretty">
+            {details}
+        </p>
+    </div>
+</div> : <></>}
+{!isPlayerPreview && v2 ? <></> : <></>}
+{!isPlayerPreview && v2 ? <></> : <></>}
+{!isPlayerPreview && v2 ? <></> : <></>}
+{!isPlayerPreview && v2 ? <></> : <></>}
+{!isPlayerPreview && v2 ? <></> : <></>}
+{!isPlayerPreview && v2 ? <></> : <></>}
+{!isPlayerPreview && v2 ? <></> : <></>}
+{!isPlayerPreview && v2 ? <></> : <></>}
+{!isPlayerPreview && v2 ? <></> : <></>}
+{!isPlayerPreview && v2 ? <></> : <></>}
+{!isPlayerPreview && v2 ? <></> : <></>}
+{!isPlayerPreview && v2 ? <></> : <></>}
+{!isPlayerPreview && v2 ? <></> : <></>}
+{!isPlayerPreview && v2 ? <></> : <></>}
+{!isPlayerPreview && v2 ? <></> : <></>}
+{!isPlayerPreview && v2 ? <></> : <></>}
+
+{isPlayerPreview ? 
+    <div class="flex flex-col justify-center space-y-4">
+        <div class="flex space-x-4 basis-full">
+            <div class="p-5 rounded-lg bg-slate-100 size-20">
+
+            <slot name="icon" />
+            </div>
+            <div class="flex-auto min-w-0 font-semibold">
+                <p
+                    class="text-sm leading-6 transition-all duration-500 text-cyan-500 demo-dark:text-cyan-400"
+                >
+                    <abbr title="Episode">Ep.</abbr> 128
+                </p>
+                <h2
+                    class="mt-1 text-sm leading-6 truncate transition-all duration-500 text-slate-500 demo-dark:text-slate-400"
+                >
+                    <slot name="name" />
+                </h2>
+                <p
+                    class="text-lg transition-all duration-500 text-slate-900 demo-dark:text-slate-50"
+                >
+                    Здоровые сайты FM
+                </p>
+            </div>
+        </div>
+        <div class="p-2 pl-3 overflow-y-scroll rounded-lg basis-0 max-h-36 min-w-64 bg-slate-100 min-h-32">
+            
+            <p
+                    class="text-sm leading-6 transition-all duration-500 text-slate-500 demo-dark:text-cyan-400"
+                >
+                    Описание
+                </p>
+            <slot name="lirycs" />
+        </div>
+    </div> 
+: null }

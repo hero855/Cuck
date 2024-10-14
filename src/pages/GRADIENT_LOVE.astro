@@ -1,0 +1,260 @@
+---
+import '@/styles/globals.css'
+---
+
+<style>
+    body {
+        background: black;
+        height: 10000vh;
+    }
+</style>
+
+<ul>
+    <li>
+        <span class="text-white">CSS BLUR:</span>
+        <div class="overflow-hidden w-fit bg-violet-900 relative">
+            <div class="w-64 h-96 relative blur"></div>
+            <div
+                class="h-2/3 w-20 bg-cyan-300 blur-2xl absolute -bottom-1 left-6"
+            >
+            </div>
+            <div
+                class="h-1/3 w-1/2 rounded-full bg-cyan-300 blur-lg absolute top-5 -right-3"
+            >
+            </div>
+
+            <div
+                class="w-1/2 h-[85%] bg-pink-400 blur-xl absolute -bottom-1 left-[40%]"
+            >
+            </div>
+            <div
+                class="w-3/4 h-12 bg-yellow-100 blur-2xl absolute -bottom-1 -left-1"
+            >
+            </div>
+        </div>
+    </li>
+    <li>
+        <span class="text-white">CSS GRADIENT:</span>
+        <div class="overflow-hidden w-fit bg-violet-900 relative">
+            <div class="w-64 h-96 relative blur"></div>
+            <div
+                class="h-2/3 w-20 bg-cyan-300 blur-2xl absolute -bottom-1 left-6"
+            >
+            </div>
+            <div
+                class="h-1/3 w-1/2 rounded-full bg-cyan-300 blur-lg absolute top-5 -right-3"
+            >
+            </div>
+
+            <div
+                class="w-1/2 h-[85%] bg-pink-400 blur-xl absolute -bottom-1 left-[40%]"
+            >
+            </div>
+            <div
+                class="w-3/4 h-12 bg-yellow-100 blur-2xl absolute -bottom-1 -left-1"
+            >
+            </div>
+        </div>
+    </li>
+    <li>
+        <span class="text-white">SVG:</span>
+        <div class="overflow-hidden w-fit bg-violet-900 relative">
+            <svg class="w-64 h-96 relative blur" viewBox="0 0 100 100">
+                <defs>
+                    <linearGradient
+                        id="gradient"
+                        x1="0%"
+                        y1="0%"
+                        x2="100%"
+                        y2="100%"
+                    >
+                        <stop
+                            offset="0%"
+                            style="stop-color:rgb(134, 239, 255);stop-opacity:1"
+                        ></stop>
+                        <stop
+                            offset="100%"
+                            style="stop-color:rgb(255, 0, 0);stop-opacity:1"
+                        ></stop>
+                    </linearGradient>
+                </defs>
+                <rect x="0" y="0" width="100" height="100" fill="url(#gradient)"
+                ></rect>
+            </svg>
+        </div>
+    </li>
+    <li>
+        <span class="text-white">SVG PATTERN:</span>
+        <div
+            class="overflow-hidden size-96 bg-white relative"
+            style="resize: both; overflow: auto"
+        >
+            <svg class="size-full" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <pattern
+                        id="Pattern"
+                        x="10"
+                        y="10"
+                        width="100"
+                        height="50"
+                        patternUnits="userSpaceOnUse"
+                        fill="black"
+                        style="background:black"
+                        
+                    >
+                        <path
+                            d="m 0 20 q 24 19 50 0 q 25 -20 50 0"
+                            stroke="red"
+                            stroke-width="10"
+                            stroke-linecap="square"
+                            fill="transparent"></path>
+                    </pattern>
+                </defs>
+
+                <rect
+                    fill="url(#Pattern)"
+                    width="100%"
+                    height="100%"
+                    filter="blur(10px)"
+                    style="background:black"
+                >
+                </rect>
+            </svg>
+        </div>
+    </li>
+    <li>
+        <span class="text-white">SVG PATTERN:</span>
+        <div
+            class="overflow-hidden size-96 bg-white relative"
+            style="resize: both; overflow: auto"
+        >
+            <svg
+                class="wrapper"
+                width="128"
+                height="266"
+                xmlns="http://www.w3.org/2000/svg"
+                preserveAspectRatio="none"
+                version="1.1"
+            >
+                <defs>
+                    <filter
+                        id="displacement-filter"
+                        width="128"
+                        height="128"
+                        x="380"
+                        y="0"
+                        filterUnits="userSpaceOnUse"
+                        color-interpolation-filters="sRGB"
+                    >
+                        <feImage
+                            width="128"
+                            height="128"
+                            href="https://assets.codepen.io/100347/fed_sagrada-384.jpg"
+                        ></feImage>
+                        <feDisplacementMap
+                            id="fedisplacementmap"
+                            in="SourceGraphic"
+                            xChannelSelector="R"
+                            yChannelSelector="B"
+                            scale="50"></feDisplacementMap>
+                    </filter>
+                </defs>
+                <image
+                    href="https://assets.codepen.io/100347/fed_sagrada-384.jpg"
+                    x="0"
+                    y="0"
+                    height="128px"
+                    width="128px"
+                />
+                <image
+                    href="/pictures/monalisa.jpg"
+                    x="138"
+                    y="0"
+                    height="128px"
+                    width="128px"
+                    filter="url(#fedisplacementmap)"
+                />
+                <image
+                    href="https://assets.codepen.io/100347/fed_monalisa-384.jpg"
+                    class="filter--mona"
+                    x="380"
+                    y="0"
+                    height="128px"
+                    width="128px"
+                />
+            </svg>
+        </div>
+    </li>
+    <li>
+        <div class="container">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                version="1.1"
+                width="500"
+                height="300"
+                viewBox="0 0 500 300"
+            >
+                <defs>
+                    <pattern
+                        id="Pattern"
+                        x="10"
+                        y="10"
+                        width="100"
+                        height="50"
+                        patternUnits="userSpaceOnUse"
+                        fill="black"
+                    >
+                        <path
+                            d="m 0 20 q 24 19 50 0 q 25 -20 50 0"
+                            stroke="red"
+                            stroke-width="10"
+                            stroke-linecap="square"
+                            fill="transparent"></path>
+                    </pattern>
+                    <rect
+                        id="waves"
+                        fill="url(#Pattern)"
+                        stroke="black"
+                        width="100%"
+                        height="100%"
+                        filter="blur(10px)"
+                    >
+                    </rect>
+                    <feGaussianBlur id="blur" in="#waves" stdDeviation="5"
+                    ></feGaussianBlur>
+                    <filter id="myFilter">
+                        <feDisplacementMap
+                            xChannelSelector="R"
+                            yChannelSelector="R"
+                            scale="500"
+                            in="#blur"
+                            in2="SourceGraphics"></feDisplacementMap>
+                    </filter>
+                </defs>
+                <!-- <image
+                id="img1"
+                xlink:href="/public/pictures/monalisa.jpg"
+                width="100%"
+                height="100%"
+                filter="url(#myFilter)"
+            /> -->
+                <rect width="100" height="100" fill="blur"> </rect>
+            </svg>
+        </div>
+        <style>
+            .container {
+                width: 75%;
+                height: 75%;
+            }
+
+            #txt1 {
+                font-size: 100px;
+                font-weight: bold;
+                font-family: 'Signika', sans-serif;
+                fill: url(#rg);
+                filter: url(#myFilter);
+                pointer-events: none;
+            }
+        </style>
+    </li>
+</ul>

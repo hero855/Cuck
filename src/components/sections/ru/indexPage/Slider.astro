@@ -1,0 +1,902 @@
+---
+import LiquidMarblingBG from '@/components/LiquidMarblingBG.astro'
+import LiquidMarblingBGKANAVA from '@/components/LiquidMarblingBGKANAVA.astro'
+import SliderCard from '@/components/ui/SliderCard.astro'
+
+/*
+
+gradients:
+
+    background: rgb(229,232,236);
+    background: linear-gradient(90deg, rgba(229,232,236,1) 0%, rgba(229,232,236,1) 35%, rgba(231,217,219,1) 74%, rgba(231,221,224,1) 100%);
+
+
+	background: linear-gradient(-45deg, blue -30%, transparent 80%), linear-gradient(45deg, darkred 20%, crimson, darkorange 60%, gold, bisque)
+
+    
+    bg-[linear-gradient(45deg,white_25%,transparent_25%,transparent_100%),linear-gradient(135deg,white_25%,transparent_25%,transparent_100%),linear-gradient(135deg,transparent_0%,transparent_75%,white_75%),linear-gradient(45deg,transparent_0%,transparent_75%,white_75%),linear-gradient(45deg,white_25%,lightgray_25%,transparent_28%,transparent_100%),linear-gradient(135deg,white_25%,lightgray_25%,transparent_28%,transparent_100%),linear-gradient(90deg,rgba(229,232,236,1)_0%,rgba(229,232,236,1)_35%,rgba(231,217,219,1)_74%,rgba(231,221,224,1)_100%)]
+
+
+
+colored bg for cards: 
+    after:transition-all relative after:absolute after:inset-0 group-data-[current=3]:bg-transparent group-data-[current=3]:after:bg-green-400 after:-z-10 after:[mask-image:radial-gradient(in_oklch_ellipse_at_80%_80%,#fb923c,transparent_80%),url('/svg/grain.svg')] after:[mask-repeat:no-repeat] after:[mask-position:left_top,left_bottom]
+
+
+    
+                <!-- 
+            
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="absolute w-8 h-8 text-primary -top-11 left-7"
+                            data-darkreader-inline-stroke=""
+                            style="--darkreader-inline-stroke: currentColor;"
+                        >
+                            <path
+                                class="group-data-[current=0]:fill-green-400 fill-transparent transition-colors"
+                                d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"
+                            ></path>
+                            <path
+                                d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"
+                            ></path>
+                        </svg>
+            
+                100% Качественно
+                
+                Мои услуги предоставляются исключительно из наилучших
+                навыков программирования, полученных из многочисленных
+                проектов.
+                 -->
+*/
+---
+
+<section
+    class="relative flex flex-col w-full h-screen gap-5 pb-5 overflow-hidden lg:pt-6 lg:pb-0 lg:h-screen"
+>
+    <div class="block group">
+        <script>
+            import {
+                $slideOffset,
+                $lastSlideUpdate,
+                $autoplayTimeout,
+                $isPlaying,
+            } from '@/store'
+            import { slide } from 'astro:transitions'
+
+            class Slider {
+                #_offset = 0
+                #_lastSlideTimestump = 0
+                #_autoplayTimeout = 5000
+                #_isPlaying = true
+                get offset() {
+                    return this.#_offset
+                }
+                get lastSlideTimestump() {
+                    return this.#_lastSlideTimestump
+                }
+                get autoplayTimeout() {
+                    return this.#_autoplayTimeout
+                }
+                get isPlaying() {
+                    return this.#_isPlaying
+                }
+                set #offset(offset: number) {
+                    this.#_offset = offset
+                    $slideOffset.set(offset)
+                }
+                set #lastSlideTimestump(timestump: number) {
+                    this.#_lastSlideTimestump = timestump
+                    $lastSlideUpdate.set(timestump)
+                }
+                set #autoplayTimeout(timeout: number) {
+                    this.#_autoplayTimeout = timeout
+                    $autoplayTimeout.set(timeout)
+                }
+                set #isPlaying(state: boolean) {
+                    this.#_isPlaying = state
+                    $isPlaying.set(state)
+                }
+                numberOfItems = 0
+
+                constructor({
+                    numberOfItems,
+                    autoplayTimeout = undefined,
+                }: {
+                    numberOfItems: number
+                    autoplayTimeout?: number
+                }) {
+                    this.numberOfItems = numberOfItems
+                    this.#autoplayTimeout = autoplayTimeout || 5000
+                }
+
+                #loop = () => {
+                    if (this.offset !== this.offset % this.numberOfItems) {
+                        this.#offset = this.offset % this.numberOfItems
+                    }
+                    this.#update()
+                    requestAnimationFrame(this.#loop)
+                }
+
+                #update = ({ useFilters } = { useFilters: true }) => {
+                    const isBreakShoudCountinue =
+                        Date.now() - this.lastSlideTimestump <
+                        this.autoplayTimeout
+                    if (
+                        useFilters &&
+                        (!this.isPlaying || isBreakShoudCountinue)
+                    )
+                        return
+
+                    this.#lastSlideTimestump = Date.now()
+                    this.#offset = this.offset + 1
+                }
+
+                start = () => {
+                    this.#isPlaying = true
+                    this.#loop()
+                }
+
+                pause = () => (this.#isPlaying = false)
+                play = () => {
+                    this.#isPlaying = true
+                    this.#lastSlideTimestump = Date.now() - 1
+                }
+
+                goTo = (offset: number) => {
+                    this.#offset = offset
+                    this.#update({ useFilters: false })
+                }
+            }
+
+            const slider = new Slider({
+                numberOfItems: 3,
+                autoplayTimeout: 10000,
+            })
+            slider.start()
+
+            const prosList = document.getElementById('pros-list')
+            const prosListMin = document.getElementById('pros-list-mini')
+            const prosRadio = document.getElementById('pros-radio')
+
+            $slideOffset.subscribe(value => {
+                if (!prosList || !prosListMin || !prosRadio) return
+                prosList.dataset.current = value.toString()
+                prosListMin.dataset.current = value.toString()
+                prosRadio.dataset.current = value.toString()
+            })
+
+            const applyListeners = (element: HTMLElement, id: number) => {
+                element.addEventListener('mouseenter', () => {
+                    console.log('enter')
+                    slider.pause()
+                    slider.goTo(id)
+                })
+                element.addEventListener('mouseleave', () => {
+                    console.log('leave')
+                    slider.play()
+                })
+            }
+
+            $isPlaying.subscribe(console.log)
+
+            const pros1 = document.getElementById('pros-1')
+            const pros2 = document.getElementById('pros-2')
+            const pros3 = document.getElementById('pros-3')
+
+            const pros1MiniTrigger = document.getElementById(
+                'pros-1-mini-trigger'
+            )
+            const pros2MiniTrigger = document.getElementById(
+                'pros-2-mini-trigger'
+            )
+            const pros3MiniTrigger = document.getElementById(
+                'pros-3-mini-trigger'
+            )
+
+            const pros1Tab = document.getElementById('pros-1-tab')
+            const pros2Tab = document.getElementById('pros-2-tab')
+            const pros3Tab = document.getElementById('pros-3-tab')
+
+            if (
+                pros1 &&
+                pros2 &&
+                pros3 &&
+                pros1MiniTrigger &&
+                pros2MiniTrigger &&
+                pros3MiniTrigger &&
+                pros1Tab &&
+                pros2Tab &&
+                pros3Tab
+            ) {
+                applyListeners(pros1, 0)
+                applyListeners(pros2, 1)
+                applyListeners(pros3, 2)
+                applyListeners(pros1MiniTrigger, 0)
+                applyListeners(pros2MiniTrigger, 1)
+                applyListeners(pros3MiniTrigger, 2)
+                applyListeners(pros1Tab, 0)
+                applyListeners(pros2Tab, 1)
+                applyListeners(pros3Tab, 2)
+            }
+
+            const radioButtonPrevious = document.getElementById(
+                'radio-button-previous'
+            )
+            const radioButtonPause =
+                document.getElementById('radio-button-pause')
+            const radioButtonPlay = document.getElementById('radio-button-play')
+            document.getElementById('radio-button-pause')
+            const radioButtonNext = document.getElementById('radio-button-next')
+            const radioButtonSpeed =
+                document.getElementById('radio-button-speed')
+
+            if (radioButtonPrevious && radioButtonPause && radioButtonNext) {
+                radioButtonPrevious.addEventListener('click', () => {
+                    slider.goTo(
+                        Math.abs($slideOffset.get() + 1) % slider.numberOfItems
+                    )
+                    console.log(
+                        Math.abs($slideOffset.get() - 1) % slider.numberOfItems
+                    )
+                })
+
+                radioButtonPause.addEventListener('click', () => {
+                    if ($isPlaying) {
+                        slider.pause()
+                        radioButtonPause.dataset.play = 'false'
+                    } else {
+                        radioButtonPause.dataset.play = 'true'
+                        slider.play()
+                    }
+                })
+
+                radioButtonNext.addEventListener('click', () => {
+                    slider.goTo($slideOffset.get() % slider.numberOfItems)
+                })
+            }
+
+            slider.goTo(0)
+        </script>
+    </div>
+
+    <LiquidMarblingBG>
+        <div
+            class="w-full lg:h-[25vh] lg:block slider-section group hidden"
+            id="pros-list"
+            data-current="0"
+        >
+            <div
+                class="container grid items-start w-full px-4 md:px-6 lg:grid-cols-3 lg:gap-12"
+            >
+                <SliderCard
+                    cardOffset={0}
+                    name="100% Качественно"
+                    details="Мои услуги предоставляются исключительно из наилучших навыков программирования, полученных из многочисленных проектов."
+                    v1
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="w-8 h-8 text-primary"
+                        data-darkreader-inline-stroke=""
+                        style="--darkreader-inline-stroke: currentColor;"
+                        slot="icon"
+                    >
+                        <path
+                            class="group-data-[current=0]:fill-green-400 fill-transparent transition-colors"
+                            d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"
+                        ></path>
+                        <path
+                            d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"
+                        ></path>
+                    </svg>
+                </SliderCard>
+                <SliderCard
+                    cardOffset={1}
+                    name="Надежные"
+                    details="Каждая услуга нацелена на предоставление вашему сайту необходимых инструментов для повышения производительности и улучшения пользовательского опыта."
+                    v1
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="w-8 h-8 text-primary"
+                        slot="icon"
+                    >
+                        <path d="M12 4V2"></path>
+                        <path
+                            class="group-data-[current=1]:fill-orange-400 fill-transparent transition-colors"
+                            d="M5 10v4a7.004 7.004 0 0 0 5.277 6.787c.412.104.802.292 1.102.592L12 22l.621-.621c.3-.3.69-.488 1.102-.592A7.003 7.003 0 0 0 19 14v-4"
+                        ></path>
+                        <path
+                            class="group-data-[current=1]:fill-orange-900 fill-transparent transition-colors"
+                            d="M12 4C8 4 4.5 6 4 8c-.243.97-.919 1.952-2 3 1.31-.082 1.972-.29 3-1 .54.92.982 1.356 2 2 1.452-.647 1.954-1.098 2.5-2 .595.995 1.151 1.427 2.5 2 1.31-.621 1.862-1.058 2.5-2 .629.977 1.162 1.423 2.5 2 1.209-.548 1.68-.967 2-2 1.032.916 1.683 1.157 3 1-1.297-1.036-1.758-2.03-2-3-.5-2-4-4-8-4Z"
+                        ></path>
+                    </svg>
+                </SliderCard>
+                <SliderCard
+                    cardOffset={2}
+                    name="Устойчиво"
+                    details="Мои навыки программирования этично получены из многочисленных проектов, чтобы минимизировать мой экологический след в качестве фрилансера."
+                    v1
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        xmlns:xlink="http://www.w3.org/1999/xlink"
+                        version="1.1"
+                        class="w-8 h-8 text-primary fill-transparent transition-colors group-data-[current=2]:bg-white rounded-full"
+                        viewBox="0 0 512 512"
+                        xml:space="preserve"
+                        slot="icon"
+                    >
+                        <path
+                            fill="black"
+                            d="M255.996,118.256c-15.289,0-27.685,12.406-27.685,27.704c0,15.288,12.396,27.685,27.685,27.685c15.297,0,27.712-12.397,27.712-27.685C283.708,130.663,271.293,118.256,255.996,118.256z"
+                        ></path>
+                        <path
+                            fill="black"
+                            d="M491.866,156.348c-12.879-30.461-31.371-57.905-54.854-81.36c-23.455-23.473-50.89-41.974-81.36-54.853c-31.55-13.352-65.18-20.134-99.656-20.134c-34.468,0-68.098,6.783-99.647,20.134c-30.461,12.879-57.897,31.38-81.361,54.853c-23.472,23.455-41.965,50.899-54.844,81.36C6.792,187.899,0,221.519,0,256.005c0,34.468,6.792,68.098,20.144,99.647c12.879,30.461,31.372,57.897,54.844,81.361c23.464,23.481,50.9,41.974,81.361,54.852c31.549,13.352,65.179,20.134,99.647,20.134c34.477,0,68.106-6.782,99.656-20.134c30.47-12.879,57.905-31.371,81.369-54.852c23.473-23.464,41.965-50.9,54.844-81.361c13.351-31.549,20.144-65.179,20.134-99.647C512.009,221.519,505.217,187.899,491.866,156.348z M255.996,393.735c-15.289,0-27.685-12.396-27.685-27.686c0-15.297,12.396-27.685,27.685-27.685c15.297,0,27.712,12.388,27.712,27.685C283.708,381.339,271.293,393.735,255.996,393.735z M333.643,223.598c-19.868,19.867-47.321,32.166-77.647,32.166c-60.914,0-110.286,49.374-110.286,110.286c0,57.406,43.866,104.565,99.906,109.796c-116.729-5.427-209.71-101.763-209.71-219.84c0-121.558,98.542-220.099,220.091-220.099v0.223c30.326,0,57.78,12.298,77.647,32.165c19.876,19.885,32.166,47.338,32.166,77.666C365.809,176.269,353.519,203.722,333.643,223.598z"
+                        ></path>
+                    </svg>
+                </SliderCard>
+            </div>
+        </div>
+        <div class="container basis-full">
+            <div
+                class="grid lg:overflow-x-visible lg:overflow-y-clip lg:mt-0 md:px-6 lg:grid-cols-2 grid-rows-[1fr,auto] h-full gap-7 lg:gap-0"
+            >
+                <div
+                    class="z-10 flex flex-col justify-center rounded-lg shadow-lg"
+                >
+                    <div
+                        class="object-cover mx-auto overflow-hidden bg-neutral-200 rounded-t-xl size-full"
+                    >
+                        <!-- <canvas id={`canvas3d`}></canvas> -->
+
+                        <script>
+                            /*  emitEvent: ƒ emitEvent(s)
+                        emitEventReverse: ƒ emitEventReverse(s)
+                        intensity: undefined
+                        name: "CUCKmber"
+                        page: "Scene 1"
+                        parentUuid: "2d3a9611-bfbb-43b3-ab02-adb4eaada2f2"
+                        position: E {
+                            x: 1.9653399007029635, 
+                            y: 1.054589867591858, 
+                            z: -0.24195627868175507
+                        }
+                        rotation: ir {
+                            "isEuler": true,
+                            "_x": 2.8697173598094836,
+                            "_y": 1.1120978401053763,
+                            "_z": 1.6311621098990423,
+                            "_order": "XYZ"
+                        }
+                        scale: E {
+                            x: 1.856998085975647, 
+                            y: 0.5777410864830017, 
+                            z: 0.5777410268783569
+                        }
+                        type: "Mesh"
+                        uuid: "671f7e04-23c2-4bff-8bff-e93e13d76448"
+                        visible: bool                                        */
+
+                            // import { Application } from '@splinetool/runtime'
+                            // import scope from 'astro:scope'
+
+                            // const CUCK_SCENE_URI =
+                            //     'https://prod.spline.design/LCB0iCzduGXLMKYX/scene.splinecode'
+                            // const HOVER_SCENE_URI =
+                            //     'https://prod.spline.design/qwFBCPU8opEFsdXi/scene.splinecode'
+
+                            // const canvas = document.getElementById(
+                            //     `canvas3d`
+                            // ) as HTMLCanvasElement | null
+
+                            // if (canvas) {
+                            //     const app = new Application(canvas)
+                            //     app.load(HOVER_SCENE_URI).then(() => {
+                            //         const CUCK = app.findObjectById(
+                            //             '671f7e04-23c2-4bff-8bff-e93e13d76448'
+                            //         )
+
+                            //         if (!CUCK) return
+
+                            //         console.log(CUCK)
+
+                            //         CUCK.position.x += Math.random() * 1
+                            //         app.setSize(550, 550)
+                            //     })
+                            // }
+                        </script>
+                    </div>
+                    <div class="relative z-10 lg:hidden">
+                        <div
+                            class="grid group px-4 py-6 transition-all duration-500 bg-white border-b border-slate-100 demo-dark:bg-slate-800 demo-dark:border-slate-500 sm:px-10 sm:py-8 lg:p-6 xl:p-10 xl:pb-8 [grid-template-areas:'stack']"
+                            id="pros-radio"
+                            data-current="0"
+                        >
+                            <div
+                                class="[grid-area:stack] group-data-[current=0]:opacity-100 opacity-0 transition-opacity pointer-events-none group-data-[current=0]:pointer-events-auto"
+                            >
+                                <SliderCard
+                                    name="100% Качественно"
+                                    details="Мои услуги предоставляются исключительно из наилучших навыков программирования, полученных из многочисленных проектов."
+                                    cardOffset={0}
+                                    isPlayerPreview
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        data-darkreader-inline-stroke=""
+                                        style="--darkreader-inline-stroke: currentColor;"
+                                        slot="icon"
+                                    >
+                                        <path
+                                            class="fill-green-400"
+                                            d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"
+                                        ></path>
+                                        <path
+                                            d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"
+                                        ></path>
+                                    </svg>
+                                </SliderCard>
+                            </div>
+                            <div
+                                class="[grid-area:stack] group-data-[current=1]:opacity-100 opacity-0 transition-opacity pointer-events-none group-data-[current=1]:pointer-events-auto"
+                            >
+                                <SliderCard
+                                    name="Надежные"
+                                    details="Каждая услуга нацелена на предоставление вашему сайту необходимых инструментов для повышения производительности и улучшения пользовательского опыта."
+                                    cardOffset={1}
+                                    isPlayerPreview
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="text-primary"
+                                        data-darkreader-inline-stroke=""
+                                        style="--darkreader-inline-stroke: currentColor;"
+                                        slot="icon"
+                                    >
+                                        <path d="M12 4V2"></path>
+                                        <path
+                                            class="transition-colors fill-orange-400"
+                                            d="M5 10v4a7.004 7.004 0 0 0 5.277 6.787c.412.104.802.292 1.102.592L12 22l.621-.621c.3-.3.69-.488 1.102-.592A7.003 7.003 0 0 0 19 14v-4"
+                                        ></path>
+                                        <path
+                                            class="transition-colors fill-orange-900"
+                                            d="M12 4C8 4 4.5 6 4 8c-.243.97-.919 1.952-2 3 1.31-.082 1.972-.29 3-1 .54.92.982 1.356 2 2 1.452-.647 1.954-1.098 2.5-2 .595.995 1.151 1.427 2.5 2 1.31-.621 1.862-1.058 2.5-2 .629.977 1.162 1.423 2.5 2 1.209-.548 1.68-.967 2-2 1.032.916 1.683 1.157 3 1-1.297-1.036-1.758-2.03-2-3-.5-2-4-4-8-4Z"
+                                        ></path>
+                                    </svg>
+                                </SliderCard>
+                            </div>
+                            <div
+                                class="[grid-area:stack] group-data-[current=2]:opacity-100 opacity-0 transition-opacity pointer-events-none group-data-[current=2]:pointer-events-auto"
+                            >
+                                <SliderCard
+                                    name="Устойчиво"
+                                    details="Мои навыки программирования этично получены из многочисленных проектов, чтобы минимизировать мой экологический след в качестве фрилансера."
+                                    cardOffset={2}
+                                    isPlayerPreview
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        xmlns:xlink="http://www.w3.org/1999/xlink"
+                                        version="1.1"
+                                        class="transition-colors bg-white rounded-full text-primary fill-transparent"
+                                        viewBox="0 0 512 512"
+                                        xml:space="preserve"
+                                        slot="icon"
+                                    >
+                                        <path
+                                            fill="black"
+                                            d="M255.996,118.256c-15.289,0-27.685,12.406-27.685,27.704c0,15.288,12.396,27.685,27.685,27.685c15.297,0,27.712-12.397,27.712-27.685C283.708,130.663,271.293,118.256,255.996,118.256z"
+                                        ></path>
+                                        <path
+                                            fill="black"
+                                            d="M491.866,156.348c-12.879-30.461-31.371-57.905-54.854-81.36c-23.455-23.473-50.89-41.974-81.36-54.853c-31.55-13.352-65.18-20.134-99.656-20.134c-34.468,0-68.098,6.783-99.647,20.134c-30.461,12.879-57.897,31.38-81.361,54.853c-23.472,23.455-41.965,50.899-54.844,81.36C6.792,187.899,0,221.519,0,256.005c0,34.468,6.792,68.098,20.144,99.647c12.879,30.461,31.372,57.897,54.844,81.361c23.464,23.481,50.9,41.974,81.361,54.852c31.549,13.352,65.179,20.134,99.647,20.134c34.477,0,68.106-6.782,99.656-20.134c30.47-12.879,57.905-31.371,81.369-54.852c23.473-23.464,41.965-50.9,54.844-81.361c13.351-31.549,20.144-65.179,20.134-99.647C512.009,221.519,505.217,187.899,491.866,156.348z M255.996,393.735c-15.289,0-27.685-12.396-27.685-27.686c0-15.297,12.396-27.685,27.685-27.685c15.297,0,27.712,12.388,27.712,27.685C283.708,381.339,271.293,393.735,255.996,393.735z M333.643,223.598c-19.868,19.867-47.321,32.166-77.647,32.166c-60.914,0-110.286,49.374-110.286,110.286c0,57.406,43.866,104.565,99.906,109.796c-116.729-5.427-209.71-101.763-209.71-219.84c0-121.558,98.542-220.099,220.091-220.099v0.223c30.326,0,57.78,12.298,77.647,32.165c19.876,19.885,32.166,47.338,32.166,77.666C365.809,176.269,353.519,203.722,333.643,223.598z"
+                                        ></path>
+                                    </svg>
+                                </SliderCard>
+                            </div>
+                            <div class="absolute top-0 left-0 grid w-full">
+                                <progress
+                                    class="w-full h-1 transition-all duration-500 bg-cyan-500 demo-dark:bg-cyan-400 [&::-webkit-progress-bar]:bg-slate-300 [&::-webkit-progress-value]:bg-cyan-500 [&::-moz-progress-bar]:bg-cyan-500"
+                                    value="60"
+                                    max="100"
+                                    id="progress-bar"></progress>
+                            </div>
+                            <script>
+                                import {
+                                    $lastSlideUpdate,
+                                    $autoplayTimeout,
+                                    $isPlaying,
+                                } from '@/store'
+
+                                const progressBar = document.getElementById(
+                                    'progress-bar'
+                                ) as HTMLProgressElement | null
+
+                                const paintLoop = () => {
+                                    update()
+                                    requestAnimationFrame(paintLoop)
+                                }
+
+                                const update = () => {
+                                    if (!progressBar || !$isPlaying.get())
+                                        return
+                                    const progress =
+                                        (Date.now() - $lastSlideUpdate.get()) /
+                                        $autoplayTimeout.get()
+                                    const progressPercent =
+                                        Number(progress.toFixed(3)) * 100
+                                    if (!isFinite(progressPercent)) return
+                                    progressBar.value = progressPercent
+                                }
+
+                                paintLoop()
+                            </script>
+                        </div>
+                        <div
+                            class="flex items-center transition-all duration-500 rounded-b-lg bg-slate-50 text-slate-500 demo-dark:bg-slate-600 demo-dark:text-slate-200"
+                        >
+                            <div
+                                class="flex items-center flex-auto justify-evenly"
+                            >
+                                <div class="size-6"></div>
+                                <button
+                                    type="button"
+                                    aria-label="Previous"
+                                    id="radio-button-previous"
+                                >
+                                    <svg class="size-6" fill="none">
+                                        <path
+                                            d="m10 12 8-6v12l-8-6Z"
+                                            fill="currentColor"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"></path>
+                                        <path
+                                            d="M6 6v12"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            <button
+                                type="button"
+                                class="flex items-center justify-center flex-none w-20 h-20 mx-auto -my-2 transition-all duration-500 bg-white rounded-full shadow-md group text-slate-900 demo-dark:bg-slate-100 demo-dark:text-slate-700 ring-1 ring-slate-900/5"
+                                aria-label="Pause"
+                                id="radio-button-pause"
+                            >
+                                <svg
+                                    class="block group-data-[play]:hidden"
+                                    width="30"
+                                    height="32"
+                                    fill="currentColor"
+                                >
+                                    <rect
+                                        x="6"
+                                        y="4"
+                                        width="4"
+                                        height="24"
+                                        rx="2"></rect>
+                                    <rect
+                                        x="20"
+                                        y="4"
+                                        width="4"
+                                        height="24"
+                                        rx="2"></rect>
+                                </svg>
+                                <svg
+                                    class="hidden group-data-[play]:block"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    height="24px"
+                                    viewBox="0 -960 960 960"
+                                    width="24px"
+                                    fill="#5f6368"
+                                    ><path
+                                        d="M320-273v-414q0-17 12-28.5t28-11.5q5 0 10.5 1.5T381-721l326 207q9 6 13.5 15t4.5 19q0 10-4.5 19T707-446L381-239q-5 3-10.5 4.5T360-233q-16 0-28-11.5T320-273Z"
+                                    ></path></svg
+                                >
+                            </button>
+                            <div
+                                class="flex items-center flex-auto justify-evenly"
+                            >
+                                <button
+                                    type="button"
+                                    aria-label="Next"
+                                    id="radio-button-next"
+                                >
+                                    <svg width="24" height="24" fill="none">
+                                        <path
+                                            d="M14 12 6 6v12l8-6Z"
+                                            fill="currentColor"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"></path>
+                                        <path
+                                            d="M18 6v12"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"></path>
+                                    </svg>
+                                </button>
+                                <button
+                                    class="px-2 text-xs font-semibold leading-6 transition-all duration-500 rounded-lg ring-2 ring-inset ring-slate-500 text-slate-500 demo-dark:text-slate-100 demo-dark:ring-0 demo-dark:bg-slate-500"
+                                    type="button"
+                                    id="radio-button-speed"
+                                >
+                                    1x
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="grid lg:grid-rows-[minmax(50px,auto)_auto] lg:justify-center lg:pl-12 bg-white lg:bg-transparent rounded-lg lg:rounded-none shadow-2xl lg:shadow-none"
+                >
+                    <div class="hidden lg:block"></div>
+                    <div
+                        class="relative z-0 flex flex-col items-center lg:after:top-0 lg:after:absolute lg:after:size-10 lg:after:bg-white lg:after:-z-10 lg:after:w-screen lg:after:h-screen lg:after:-translate-xp-14 lg:after:-translate-y-8"
+                    >
+                        <div
+                            class="px-4 pt-4 pb-8 lg:w-auto lg:mr-0 lg:ml-0 lg:pr-0 lg:pl-0 lg:max-w-none"
+                        >
+                            <h2
+                                class="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl"
+                            >
+                                Разработано с любовью, питание для вашего сайта
+                            </h2>
+                            <p
+                                class="max-w-[600px] text-muted-foreground md:text-xl mt-6"
+                            >
+                                Мои услуги предоставляются из наилучших навыков
+                                программирования, тщательно подобранных, чтобы
+                                обеспечить ваш сайт необходимыми инструментами
+                                для процветания.
+                            </p>
+                        </div>
+                        <div
+                            class="w-fit [grid:auto-flow_120px_/_repeat(2,120px)] place-items-center rotate-45 group hidden lg:grid"
+                            id="pros-list-mini"
+                            data-current="0"
+                        >
+                            <div></div>
+                            <li
+                                class="grid place-items-center px-6 py-3 aspect-square justify-center w-full order-3
+                            
+                            bg-[linear-gradient(90deg,rgba(229,232,236,1)_0%,rgba(229,232,236,1)_35%,rgba(231,217,219,1)_74%,rgba(231,221,224,1)_100%)]
+                            shadow-inner
+                            
+                            after:w-full
+                            after:h-px
+                            after:scale-x-[2]
+                            after:top-0
+                            after:left-1/3
+                            after:bg-[linear-gradient(to_right,transparent,lightgrey,transparent)]
+                            #after:bg-red-400
+                            after:absolute
+                            after:z-10
+                            
+                            before:w-full
+                            before:h-px
+                            before:scale-x-[3]
+                            before:bottom-0
+                            before:-right-1/2
+                            before:bg-[linear-gradient(to_right,transparent,lightgrey,transparent)]
+                            before:absolute
+                            before:z-10
+                            before:-rotate-90"
+                            >
+                                <div
+                                    class="grid place-items-center gap-3 -rotate-45 w-[141%]"
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="40"
+                                        height="40"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="size-10 text-primary"
+                                        data-darkreader-inline-stroke=""
+                                        style="--darkreader-inline-stroke: currentColor;"
+                                    >
+                                        <path
+                                            d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"
+                                        ></path>
+                                        <path
+                                            d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"
+                                        ></path>
+                                    </svg>
+                                    <span
+                                        class="text-lg font-semibold leading-tight text-center"
+                                        >Опыт</span
+                                    >
+                                </div>
+                                <label
+                                    class="absolute size-1/2 bg-white opacity-100 group-data-[current=0]:opacity-20 transition-[opacity,background-color]"
+                                    id="pros-1-mini-trigger"></label>
+                            </li>
+                            <li
+                                class="grid place-items-center order-last px-6 py-3 aspect-square justify-center w-full
+                            
+                                bg-[linear-gradient(90deg,rgba(229,232,236,1)_0%,rgba(229,232,236,1)_35%,rgba(231,217,219,1)_74%,rgba(231,221,224,1)_100%)]
+                            
+                                shadow-inner
+                                
+                                after:absolute
+                                after:w-1/2
+                                after:h-px
+                                after:scale-x-[3]
+                                after:top-1/2
+                                after:-left-1/3
+                                after:bg-[linear-gradient(to_right,transparent,lightgrey,transparent)]
+                                after:z-10
+                                
+                                before:absolute
+                                before:w-full
+                                before:h-px
+                                before:scale-x-[3]
+                                before:top-1/2
+                                before:right-0
+                                before:bg-[linear-gradient(to_right,transparent,lightgrey,transparent)]
+                                before:rotate-90
+                                before:z-10"
+                                id="pros-2-mini"
+                            >
+                                <div
+                                    class="grid place-items-center gap-3 -rotate-45 w-[141%]"
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="40"
+                                        height="40"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="size-10 text-primary"
+                                        data-darkreader-inline-stroke=""
+                                        style="--darkreader-inline-stroke: currentColor;"
+                                    >
+                                        <path d="M12 4V2"></path>
+                                        <path
+                                            d="M5 10v4a7.004 7.004 0 0 0 5.277 6.787c.412.104.802.292 1.102.592L12 22l.621-.621c.3-.3.69-.488 1.102-.592A7.003 7.003 0 0 0 19 14v-4"
+                                        ></path>
+                                        <path
+                                            d="M12 4C8 4 4.5 6 4 8c-.243.97-.919 1.952-2 3 1.31-.082 1.972-.29 3-1 .54.92.982 1.356 2 2 1.452-.647 1.954-1.098 2.5-2 .595.995 1.151 1.427 2.5 2 1.31-.621 1.862-1.058 2.5-2 .629.977 1.162 1.423 2.5 2 1.209-.548 1.68-.967 2-2 1.032.916 1.683 1.157 3 1-1.297-1.036-1.758-2.03-2-3-.5-2-4-4-8-4Z"
+                                        ></path>
+                                    </svg>
+                                    <span
+                                        class="text-lg font-semibold leading-tight text-center"
+                                        >Высокопроизводительное</span
+                                    >
+                                </div>
+                                <label
+                                    class="absolute size-1/2 bg-white opacity-100 group-data-[current=1]:opacity-0 transition-[opacity,background-color]"
+                                    id="pros-2-mini-trigger"></label>
+                            </li>
+                            <li
+                                class="grid place-items-center px-6 py-3 aspect-square justify-center w-full
+                            
+                            bg-[linear-gradient(90deg,rgba(229,232,236,1)_0%,rgba(229,232,236,1)_35%,rgba(231,217,219,1)_74%,rgba(231,221,224,1)_100%)]
+                            
+                            shadow-inner
+                            
+                            after:w-full
+                            after:h-px
+                            after:scale-x-[2]
+                            after:top-2/3
+                            after:-left-1/2
+                            after:bg-[linear-gradient(to_right,transparent,lightgrey,transparent)]
+                            after:absolute
+                            after:rotate-90
+                            after:z-10
+                            
+                            before:w-full
+                            before:h-px
+                            before:scale-x-[3]
+                            before:bottom-0
+                            before:left-0
+                            before:bg-[linear-gradient(to_right,transparent,lightgrey,transparent)]
+                            before:absolute
+                            before:z-10"
+                                id="pros-3-mini"
+                            >
+                                <div
+                                    class="grid place-items-center gap-3 -rotate-45 w-[141%]"
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        xmlns:xlink="http://www.w3.org/1999/xlink"
+                                        width="24"
+                                        height="24"
+                                        version="1.1"
+                                        class="w-8 h-8 text-primary"
+                                        viewBox="0 0 512 512"
+                                        xml:space="preserve"
+                                    >
+                                        <path
+                                            fill="black"
+                                            d="M255.996,118.256c-15.289,0-27.685,12.406-27.685,27.704c0,15.288,12.396,27.685,27.685,27.685c15.297,0,27.712-12.397,27.712-27.685C283.708,130.663,271.293,118.256,255.996,118.256z"
+                                        ></path>
+                                        <path
+                                            fill="black"
+                                            d="M491.866,156.348c-12.879-30.461-31.371-57.905-54.854-81.36c-23.455-23.473-50.89-41.974-81.36-54.853c-31.55-13.352-65.18-20.134-99.656-20.134c-34.468,0-68.098,6.783-99.647,20.134c-30.461,12.879-57.897,31.38-81.361,54.853c-23.472,23.455-41.965,50.899-54.844,81.36C6.792,187.899,0,221.519,0,256.005c0,34.468,6.792,68.098,20.144,99.647c12.879,30.461,31.372,57.897,54.844,81.361c23.464,23.481,50.9,41.974,81.361,54.852c31.549,13.352,65.179,20.134,99.647,20.134c34.477,0,68.106-6.782,99.656-20.134c30.47-12.879,57.905-31.371,81.369-54.852c23.473-23.464,41.965-50.9,54.844-81.361c13.351-31.549,20.144-65.179,20.134-99.647C512.009,221.519,505.217,187.899,491.866,156.348z M255.996,393.735c-15.289,0-27.685-12.396-27.685-27.686c0-15.297,12.396-27.685,27.685-27.685c15.297,0,27.712,12.388,27.712,27.685C283.708,381.339,271.293,393.735,255.996,393.735z M333.643,223.598c-19.868,19.867-47.321,32.166-77.647,32.166c-60.914,0-110.286,49.374-110.286,110.286c0,57.406,43.866,104.565,99.906,109.796c-116.729-5.427-209.71-101.763-209.71-219.84c0-121.558,98.542-220.099,220.091-220.099v0.223c30.326,0,57.78,12.298,77.647,32.165c19.876,19.885,32.166,47.338,32.166,77.666C365.809,176.269,353.519,203.722,333.643,223.598z"
+                                        ></path>
+                                    </svg>
+                                    <span
+                                        class="text-lg font-semibold leading-tight text-center"
+                                        >Устойчиво поставляется</span
+                                    >
+                                </div>
+                                <label
+                                    class="absolute size-1/2 bg-white opacity-100 group-data-[current=2]:opacity-0 transition-[opacity,background-color]"
+                                    id="pros-3-mini-trigger"></label>
+                            </li>
+                        </div>
+                    </div>
+                </div>
+
+                <script>
+                    // @ts-ignore
+                    ;(CSS.paintWorklet || paintWorklet).addModule(
+                        'smooth-corners.js'
+                    )
+                </script>
+
+                <style>
+                    .super-rounded {
+                        --smooth-corners: 4;
+                        background: linear-gradient(deeppink, orangered);
+                        mask-image: paint(smooth-corners);
+                    }
+                </style>
+            </div>
+        </div>
+    </LiquidMarblingBG>
+</section>

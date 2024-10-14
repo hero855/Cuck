@@ -1,0 +1,144 @@
+<slot />
+
+<canvas
+    class="absolute inset-0 p-0 m-0 size-full -z-10 -left-[20%]"
+    id="mainstage"
+    style="filter: url(#displacementFilter);"></canvas>
+<svg class="absolute inset-0 size-full -z-10">
+    <filter id="displacementFilter">
+        <feTurbulence
+            id="turbulence"
+            type="turbulence"
+            baseFrequency="0.009"
+            numOctaves="5"></feTurbulence>
+        <feDisplacementMap id="displacement" in="SourceGraphic" scale="150"
+        ></feDisplacementMap>
+    </filter>
+</svg>
+
+<script>
+    import chroma from 'chroma-js'
+
+    const LINE_WIDTH = 40
+    const SPEED = 0.4
+    const MAX_DISTANCE = 200
+    const FADE_DISTANCE = 50
+
+    const PALETTES = {
+        grayness: {
+            bg: chroma('#2a2a2a'),
+            otherColors: [
+                chroma('#808080'),
+                chroma('#a0a0a0'),
+                chroma('#c0c0c0'),
+                chroma('#e0e0e0'),
+                chroma('#f0f0f0'),
+            ],
+        },
+    }
+
+    const CURRENT_PALETTE = PALETTES['grayness']
+    const CURRENT_BG = CURRENT_PALETTE['bg'].hex()
+
+    type Star = {
+        x: number
+        y: number
+        color: chroma.Color
+        angle: number
+        startAngle: number
+    }
+
+    document.addEventListener('DOMContentLoaded', createStarField)
+
+    function createStarField() {
+        const canvas = document.getElementById(
+            'mainstage'
+        ) as HTMLCanvasElement | null
+        if (!canvas) return
+
+        const starArray: Star[] = []
+        const context = canvas.getContext('2d')
+        canvas.width = canvas.clientWidth
+        canvas.height = canvas.clientHeight
+        canvas.style.backgroundColor = CURRENT_BG
+
+        let count = Math.floor(canvas.width / 10)
+        while (count--)
+            starArray.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                color: CURRENT_PALETTE['otherColors'][
+                    Math.floor(
+                        Math.random() * CURRENT_PALETTE['otherColors'].length
+                    )
+                ],
+                angle: Math.random() * 360,
+                startAngle: Math.random() * 360,
+            })
+
+        function main() {
+            update()
+            render()
+            requestAnimationFrame(main)
+        }
+
+        function update() {
+            if (!canvas) return
+
+            starArray.forEach(star => {
+                if (
+                    star.x < 0 ||
+                    star.x > canvas.width ||
+                    star.y < 0 ||
+                    star.y > canvas.height
+                ) {
+                    star.angle = star.angle + 90 + (star.angle % 90)
+                    star.startAngle = star.angle
+                } else if (star.angle !== star.startAngle) {
+                    star.angle = star.startAngle
+                }
+
+                star.x -= SPEED * Math.sin((star.angle * Math.PI) / 180)
+                star.y += SPEED * Math.cos((star.angle * Math.PI) / 180)
+            })
+        }
+
+        function render() {
+            if (!canvas || !context) return
+
+            context.clearRect(0, 0, canvas.width, canvas.height)
+
+            for (let i = 0; i < starArray.length; i++) {
+                for (let j = i + 1; j < starArray.length; j++) {
+                    const starA = starArray[i]
+                    const starB = starArray[j]
+
+                    const distance = Math.sqrt(
+                        (starA.x - starB.x) ** 2 + (starA.y - starB.y) ** 2
+                    )
+
+                    if (distance > MAX_DISTANCE) continue
+
+                    let alpha = 1
+                    if (distance > MAX_DISTANCE - FADE_DISTANCE) {
+                        alpha = (MAX_DISTANCE - distance) / FADE_DISTANCE
+                    }
+
+                    context.strokeStyle = chroma
+                        .mix(starA.color, starB.color, 0.5)
+                        .desaturate(0.5)
+                        .alpha(alpha * 0.5)
+                        .css()
+
+                    context.beginPath()
+                    context.lineWidth = LINE_WIDTH
+                    context.moveTo(starA.x, starA.y)
+                    context.lineTo(starB.x, starB.y)
+                    context.stroke()
+                }
+            }
+        }
+
+        main()
+    }
+</script>

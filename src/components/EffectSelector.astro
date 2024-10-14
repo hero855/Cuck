@@ -1,0 +1,42 @@
+---
+const effects = [
+    'SoapBubble',
+    'LogoReveal',
+    'LoadingAnimation',
+    'DataVisualization',
+    'MusicVisualizer',
+    'InteractiveArt',
+    'TimeBasedAnimation',
+]
+---
+
+<div class="effect-selector">
+    <label for="effect-select">Choose an effect:</label>
+    <select id="effect-select">
+        {effects.map(effect => <option value={effect}>{effect}</option>)}
+    </select>
+</div>
+
+<script>
+    const select = document.getElementById('effect-select')
+    const container = document.getElementById('effect-container')
+
+    select.addEventListener('change', event => {
+        const selectedEffect = event.target.value
+        Array.from(container.children).forEach(child => {
+            child.style.display = child.id === selectedEffect ? 'block' : 'none'
+        })
+    })
+
+    // Initialize with the first effect
+    select.dispatchEvent(new Event('change'))
+</script>
+
+<style>
+    .effect-selector {
+        margin-bottom: 20px;
+    }
+    select {
+        margin-left: 10px;
+    }
+</style>

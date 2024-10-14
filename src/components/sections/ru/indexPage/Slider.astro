@@ -159,13 +159,14 @@ colored bg for cards:
                 numberOfItems: 3,
                 autoplayTimeout: 10000,
             })
-            slider.start()
+            // slider.start()
 
             const prosList = document.getElementById('pros-list')
             const prosListMin = document.getElementById('pros-list-mini')
             const prosRadio = document.getElementById('pros-radio')
 
             $slideOffset.subscribe(value => {
+                return
                 if (!prosList || !prosListMin || !prosRadio) return
                 prosList.dataset.current = value.toString()
                 prosListMin.dataset.current = value.toString()
@@ -262,7 +263,7 @@ colored bg for cards:
                 })
             }
 
-            slider.goTo(0)
+            // slider.goTo(0)
         </script>
     </div>
 
@@ -681,7 +682,7 @@ colored bg for cards:
                             class="px-4 pt-4 pb-8 lg:w-auto lg:mr-0 lg:ml-0 lg:pr-0 lg:pl-0 lg:max-w-none"
                         >
                             <h2
-                                class="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl"
+                                class="text-3xl font-heroRu font-medium sm:text-4xl md:text-5xl"
                             >
                                 Разработано с любовью, питание для вашего сайта
                             </h2>
@@ -694,7 +695,7 @@ colored bg for cards:
                                 для процветания.
                             </p>
                         </div>
-                        <div
+                        <!-- <div
                             class="w-fit [grid:auto-flow_120px_/_repeat(2,120px)] place-items-center rotate-45 group hidden lg:grid"
                             id="pros-list-mini"
                             data-current="0"
@@ -878,7 +879,7 @@ colored bg for cards:
                                     class="absolute size-1/2 bg-white opacity-100 group-data-[current=2]:opacity-0 transition-[opacity,background-color]"
                                     id="pros-3-mini-trigger"></label>
                             </li>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
 

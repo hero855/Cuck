@@ -59,6 +59,38 @@
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
   }
+
+  @font-face {
+    font-family: 'Agrumato';
+    src: url(/fonts/agrumato-regular.ttf);
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Ramona';
+    src: url(/fonts/Ramona-Bold.ttf);
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Fantasy';
+    src: url(/fonts/fantasy.ttf);
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Ruslan Display';
+    src: url(/fonts/ruslandisplay-fixed.ttf);
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
 }
 
 @layer base {

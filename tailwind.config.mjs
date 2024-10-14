@@ -21,6 +21,9 @@ module.exports = {
         courier: "'Courier New', monospace",
         space: "'Space Mono', monospace",
         inconsolata: "'Inconsolata', monospace;",
+        heroEn: "Agrumato, Roboto",
+        heroRu: "'Fantasy'",
+        ruslan: "'Ruslan Display'"
       },
       colors: {
         border: "hsl(var(--border))",

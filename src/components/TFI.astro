@@ -2,25 +2,36 @@
 import '@/styles/globals.css'
 ---
 
-<body style="background: #000">
-    <canvas></canvas>
-</body>
+<slot />
+
+<canvas class="absolute size-full -z-10" id="TFICanvas"></canvas>
 
 <script>
+    import { random } from 'chroma-js'
+
     document.addEventListener('DOMContentLoaded', () => {
-        const canvas = document.getElementsByTagName('canvas').item(0)
+        const canvas = document.getElementById(
+            'TFICanvas'
+        ) as HTMLCanvasElement | null
         if (!canvas) return
         const ctx = canvas.getContext('2d')
         if (!ctx) return
 
-        let width, height, scaledWidth, scaledHeight, imageData, buf8, data32
+        let width: number,
+            height: number,
+            scaledWidth: number,
+            scaledHeight: number,
+            imageData: ImageData,
+            buf8,
+            data32: Uint32Array
         let time = 0
         const scale = 0.25 // Render at 1/4 resolution
-        let resizeTimeout
+        let resizeTimeout: number
 
         function resize() {
-            const newWidth = window.innerWidth
-            const newHeight = window.innerHeight
+            if (!canvas || !ctx || !canvas.parentElement) return
+            const newWidth = canvas.parentElement.clientWidth
+            const newHeight = canvas.parentElement.clientHeight
             const newScaledWidth = Math.floor(newWidth * scale)
             const newScaledHeight = Math.floor(newHeight * scale)
 
@@ -137,6 +148,8 @@ import '@/styles/globals.css'
             })
 
             worker.onmessage = function (e) {
+                if (!canvas || !ctx) return
+
                 const newData32 = new Uint32Array(e.data.buffer)
                 // Ensure we don't copy more data than we have space for
                 data32.set(newData32.subarray(0, data32.length))

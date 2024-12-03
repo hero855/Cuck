@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Фреймбуфер Объекты</title>
+        <style>
+            #canvas1 {
+                width: 400px;
+                height: 400px;
+                border: 1px solid black;
+            }
+            #canvas2 {
+                width: 400px;
+                height: 400px;
+                border: 1px solid black;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas id="canvas1"></canvas>
+        <canvas id="canvas2"></canvas>
+        <script>
+            // Получаем canvas элементы
+            var canvas1 = document.getElementById('canvas1')
+            var canvas2 = document.getElementById('canvas2')
+
+            // Получаем контекст рисования
+            var gl1 = canvas1.getContext('webgl')
+            var gl2 = canvas2.getContext('webgl')
+
+            // Создаем буферы и шейдеры
+            var buffer1, buffer2, shader1, shader2
+            var buffer1 = gl1.createBuffer()
+            var buffer2 = gl2.createBuffer()
+            var shader1 = gl1.createProgram()
+            var shader2 = gl2.createProgram()
+
+            // Устанавливаем шейдеры
+            gl1.useProgram(shader1)
+            gl1.uniform1i(gl1.getUniformLocation(shader1, 'buffer'), buffer1)
+            gl2.useProgram(shader2)
+            gl2.uniform1i(gl2.getUniformLocation(shader2, 'buffer'), buffer2)
+
+            // Создаем анимацию
+            function animate() {
+                // Отрисовка анимации в canvas1
+                gl1.bindFramebuffer(gl1.FRAMEBUFFER, buffer1)
+                gl1.drawArrays(gl1.TRIANGLES, 0, 3)
+
+                // Отрисовка анимации в canvas2
+                gl2.bindFramebuffer(gl2.FRAMEBUFFER, buffer2)
+                gl2.drawArrays(gl2.TRIANGLES, 0, 3)
+
+                // Обновляем анимацию
+                requestAnimationFrame(animate)
+            }
+
+            // Начинаем анимацию
+            animate()
+        </script>
+    </body>
+</html>

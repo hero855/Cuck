@@ -1,0 +1,80 @@
+---
+import Layout3D from '@/layouts/Layout3D.astro'
+
+import Hero from '@/components/sections/ru/indexPage/Hero.astro'
+import Slider from '@/components/sections/ru/indexPage/Slider.astro'
+import Testimonials from '@/components/sections/ru/indexPage/Testimonials.astro'
+import Feedback from '@/components/sections/ru/indexPage/Feedback.astro'
+import Footer from '@/components/sections/ru/indexPage/Footer.astro'
+
+import '@/styles/globals.css'
+---
+
+<Layout3D title="CUCK">
+    <header
+        class="sticky z-20 flex items-center px-4 pt-6 transition-opacity -top-6 lg:px-6 h-14 backdrop-blur"
+    >
+        <a class="font-ruslan text-2xl" href="#">
+            <!-- <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="w-6 h-6"
+                data-darkreader-inline-stroke=""
+                style="--darkreader-inline-stroke: currentColor;"
+            >
+                <path
+                    d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"
+                ></path>
+                <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"
+                ></path>
+            </svg>
+            <span class="sr-only">Verdant Vitality</span> -->
+            Илья
+        </a>
+        <nav class="flex gap-4 ml-auto sm:gap-6">
+            <a
+                href="#"
+                class="text-sm font-medium hover:underline underline-offset-4"
+            >
+                Продукты
+            </a>
+            <a
+                class="text-sm font-medium hover:underline underline-offset-4"
+                href="#"
+            >
+                Обо мне
+            </a>
+            <a
+                class="text-sm font-medium hover:underline underline-offset-4"
+                href="#"
+            >
+                Отзывы
+            </a>
+            <a
+                href="#"
+                class="text-sm font-medium hover:underline underline-offset-4"
+            >
+                Контакты
+            </a>
+        </nav>
+    </header>
+    <main class="flex-1">
+        <Hero />
+        <Slider />
+        <Testimonials />
+        <Feedback />
+    </main>
+    <Footer />
+</Layout3D>
+
+<style>
+    body {
+    }
+</style>

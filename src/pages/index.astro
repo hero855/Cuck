@@ -1,80 +1,76 @@
 ---
-import Layout3D from '@/layouts/Layout3D.astro'
-
-import Hero from '@/components/sections/ru/indexPage/Hero.astro'
-import Slider from '@/components/sections/ru/indexPage/Slider.astro'
-import Testimonials from '@/components/sections/ru/indexPage/Testimonials.astro'
-import Feedback from '@/components/sections/ru/indexPage/Feedback.astro'
-import Footer from '@/components/sections/ru/indexPage/Footer.astro'
-
+import WaveEffect from '@/components/WaveEffect.astro'
+import WaveEffectComposition from '@/components/WaveEffectComposition.astro'
+import WebGPU from '@/components/WebGPU.astro'
 import '@/styles/globals.css'
 ---
 
-<Layout3D title="CUCK">
-    <header
-        class="sticky z-20 flex items-center px-4 pt-6 transition-opacity -top-6 lg:px-6 h-14 backdrop-blur"
-    >
-        <a class="font-ruslan text-2xl" href="#">
-            <!-- <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="w-6 h-6"
-                data-darkreader-inline-stroke=""
-                style="--darkreader-inline-stroke: currentColor;"
-            >
-                <path
-                    d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"
-                ></path>
-                <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"
-                ></path>
-            </svg>
-            <span class="sr-only">Verdant Vitality</span> -->
-            Илья
-        </a>
-        <nav class="flex gap-4 ml-auto sm:gap-6">
-            <a
-                href="#"
-                class="text-sm font-medium hover:underline underline-offset-4"
-            >
-                Продукты
-            </a>
-            <a
-                class="text-sm font-medium hover:underline underline-offset-4"
-                href="#"
-            >
-                Обо мне
-            </a>
-            <a
-                class="text-sm font-medium hover:underline underline-offset-4"
-                href="#"
-            >
-                Отзывы
-            </a>
-            <a
-                href="#"
-                class="text-sm font-medium hover:underline underline-offset-4"
-            >
-                Контакты
-            </a>
-        </nav>
-    </header>
-    <main class="flex-1">
-        <Hero />
-        <Slider />
-        <Testimonials />
-        <Feedback />
-    </main>
-    <Footer />
-</Layout3D>
+<html class="h-full">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Love Maze - OzOv</title>
+        <meta name="author" content="Ozerov Ilya" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <!-- <link rel="preconnect" href="https://fonts.googleapis.com" /> -->
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-<style>
-    body {
-    }
-</style>
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link href="https://fonts.googleapis.com/css2?family=Charm:wght@400;700&display=swap" rel="stylesheet" />
+    </head>
+
+    <body class="min-h-screen bg-black">
+        <canvas id="canvas"></canvas>
+        <script>
+            const vertexShaderText = ``
+            const fragmentShaderText = ``
+
+            function initShader() {
+                const canvas = document.getElementsByTagName('canvas').item(0)
+                if (!canvas) return
+                const webgl = canvas.getContext('webgl')
+                if (!webgl) return
+                const vertexShader = webgl.createShader(webgl.VERTEX_SHADER)
+                const fragmentShader = webgl.createShader(webgl.FRAGMENT_SHADER)
+                if (!vertexShader || !fragmentShader) return
+                webgl.shaderSource(vertexShader, vertexShaderText)
+                webgl.shaderSource(fragmentShader, fragmentShaderText)
+
+                webgl.compileShader(vertexShader)
+                if (!webgl.getShaderParameter(vertexShader, webgl.COMPILE_STATUS)) {
+                    return
+                }
+
+                webgl.compileShader(fragmentShader)
+                if (!webgl.getShaderParameter(fragmentShader, webgl.COMPILE_STATUS)) {
+                    return
+                }
+
+                const program = webgl.createProgram()
+                if (!program) {
+                    return
+                }
+
+                webgl.attachShader(program, vertexShader)
+                webgl.attachShader(program, fragmentShader)
+                webgl.linkProgram(program)
+
+                if (!webgl.getProgramParameter(program, webgl.LINK_STATUS)) {
+                    return
+                }
+
+                webgl.useProgram(program)
+            }
+        </script>
+        <!-- <div class="grid h-screen place-items-center size-full">
+            <div class="relative w-[30rem] h-[32rem]">
+                <WaveEffectComposition className="z-20 pointer-events-none">
+                    <div class="relative z-10 grid h-full bg-black border-2 pointer-events-none place-items-center border-neutral-400">
+                        <span class="font-['Charm'] text-6xl font-bold absolute top-[40%] [-webkit-text-stroke:_1px_white] opacity-25" id="text-3">вот так вот</span>
+                        <span class="font-['Charm'] text-6xl font-bold absolute top-[42%] [-webkit-text-stroke:_1px_white] opacity-40" id="text-2">вот так вот</span>
+                        <span class="font-['Charm'] text-6xl font-bold absolute text-neutral-200" id="text-1">вот так вот </span>
+                    </div>
+                </WaveEffectComposition>
+            </div>
+        </div> -->
+    </body>
+</html>

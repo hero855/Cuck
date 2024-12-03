@@ -12,9 +12,7 @@ import '@/styles/globals.css'
 
 <Layout3D title="CUCK">
     <div class="flex flex-col min-h-[100dvh]">
-        <header
-            class="sticky top-0 flex items-center px-4 transition-opacity lg:px-6 h-14 backdrop-blur"
-        >
+        <header class="sticky top-0 flex items-center px-4 transition-opacity lg:px-6 h-14 backdrop-blur">
             <a class="flex items-center justify-center" href="#">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -30,43 +28,20 @@ import '@/styles/globals.css'
                     data-darkreader-inline-stroke=""
                     style="--darkreader-inline-stroke: currentColor;"
                 >
-                    <path
-                        d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"
-                    ></path>
-                    <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"
-                    ></path>
+                    <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path>
+                    <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path>
                 </svg>
                 <span class="sr-only">Verdant Vitality</span>
             </a>
             <nav class="flex gap-4 ml-auto sm:gap-6">
-                <a
-                    href="#"
-                    class="text-sm font-medium hover:underline underline-offset-4"
-                >
-                    Products
-                </a>
-                <a
-                    class="text-sm font-medium hover:underline underline-offset-4"
-                    href="#"
-                >
-                    About
-                </a>
-                <a
-                    class="text-sm font-medium hover:underline underline-offset-4"
-                    href="#"
-                >
-                    Testimonials
-                </a>
-                <a
-                    href="#"
-                    class="text-sm font-medium hover:underline underline-offset-4"
-                >
-                    Contact
-                </a>
+                <a href="#" class="text-sm font-medium hover:underline underline-offset-4"> Products </a>
+                <a class="text-sm font-medium hover:underline underline-offset-4" href="#"> About </a>
+                <a class="text-sm font-medium hover:underline underline-offset-4" href="#"> Testimonials </a>
+                <a href="#" class="text-sm font-medium hover:underline underline-offset-4"> Contact </a>
             </nav>
         </header>
         <script>
-            import { $section } from '@/sectionStore.ts'
+            // import { $section } from '@/sectionStore.ts'
 
             const updateHeaderState = () => {
                 const header = document.getElementsByTagName('header').item(0)

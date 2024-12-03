@@ -60,219 +60,8 @@ colored bg for cards:
 <section
     class="relative flex flex-col w-full h-screen gap-5 pb-5 overflow-hidden lg:pt-6 lg:pb-0 lg:h-screen"
 >
-    <div class="block group">
-        <script>
-            import {
-                $slideOffset,
-                $lastSlideUpdate,
-                $autoplayTimeout,
-                $isPlaying,
-            } from '@/store'
-            import { slide } from 'astro:transitions'
-
-            class Slider {
-                #_offset = 0
-                #_lastSlideTimestump = 0
-                #_autoplayTimeout = 5000
-                #_isPlaying = true
-                get offset() {
-                    return this.#_offset
-                }
-                get lastSlideTimestump() {
-                    return this.#_lastSlideTimestump
-                }
-                get autoplayTimeout() {
-                    return this.#_autoplayTimeout
-                }
-                get isPlaying() {
-                    return this.#_isPlaying
-                }
-                set #offset(offset: number) {
-                    this.#_offset = offset
-                    $slideOffset.set(offset)
-                }
-                set #lastSlideTimestump(timestump: number) {
-                    this.#_lastSlideTimestump = timestump
-                    $lastSlideUpdate.set(timestump)
-                }
-                set #autoplayTimeout(timeout: number) {
-                    this.#_autoplayTimeout = timeout
-                    $autoplayTimeout.set(timeout)
-                }
-                set #isPlaying(state: boolean) {
-                    this.#_isPlaying = state
-                    $isPlaying.set(state)
-                }
-                numberOfItems = 0
-
-                constructor({
-                    numberOfItems,
-                    autoplayTimeout = undefined,
-                }: {
-                    numberOfItems: number
-                    autoplayTimeout?: number
-                }) {
-                    this.numberOfItems = numberOfItems
-                    this.#autoplayTimeout = autoplayTimeout || 5000
-                }
-
-                #loop = () => {
-                    if (this.offset !== this.offset % this.numberOfItems) {
-                        this.#offset = this.offset % this.numberOfItems
-                    }
-                    this.#update()
-                    requestAnimationFrame(this.#loop)
-                }
-
-                #update = ({ useFilters } = { useFilters: true }) => {
-                    const isBreakShoudCountinue =
-                        Date.now() - this.lastSlideTimestump <
-                        this.autoplayTimeout
-                    if (
-                        useFilters &&
-                        (!this.isPlaying || isBreakShoudCountinue)
-                    )
-                        return
-
-                    this.#lastSlideTimestump = Date.now()
-                    this.#offset = this.offset + 1
-                }
-
-                start = () => {
-                    this.#isPlaying = true
-                    this.#loop()
-                }
-
-                pause = () => (this.#isPlaying = false)
-                play = () => {
-                    this.#isPlaying = true
-                    this.#lastSlideTimestump = Date.now() - 1
-                }
-
-                goTo = (offset: number) => {
-                    this.#offset = offset
-                    this.#update({ useFilters: false })
-                }
-            }
-
-            const slider = new Slider({
-                numberOfItems: 3,
-                autoplayTimeout: 10000,
-            })
-            // slider.start()
-
-            const prosList = document.getElementById('pros-list')
-            const prosListMin = document.getElementById('pros-list-mini')
-            const prosRadio = document.getElementById('pros-radio')
-
-            $slideOffset.subscribe(value => {
-                return
-                if (!prosList || !prosListMin || !prosRadio) return
-                prosList.dataset.current = value.toString()
-                prosListMin.dataset.current = value.toString()
-                prosRadio.dataset.current = value.toString()
-            })
-
-            const applyListeners = (element: HTMLElement, id: number) => {
-                element.addEventListener('mouseenter', () => {
-                    console.log('enter')
-                    slider.pause()
-                    slider.goTo(id)
-                })
-                element.addEventListener('mouseleave', () => {
-                    console.log('leave')
-                    slider.play()
-                })
-            }
-
-            $isPlaying.subscribe(console.log)
-
-            const pros1 = document.getElementById('pros-1')
-            const pros2 = document.getElementById('pros-2')
-            const pros3 = document.getElementById('pros-3')
-
-            const pros1MiniTrigger = document.getElementById(
-                'pros-1-mini-trigger'
-            )
-            const pros2MiniTrigger = document.getElementById(
-                'pros-2-mini-trigger'
-            )
-            const pros3MiniTrigger = document.getElementById(
-                'pros-3-mini-trigger'
-            )
-
-            const pros1Tab = document.getElementById('pros-1-tab')
-            const pros2Tab = document.getElementById('pros-2-tab')
-            const pros3Tab = document.getElementById('pros-3-tab')
-
-            if (
-                pros1 &&
-                pros2 &&
-                pros3 &&
-                pros1MiniTrigger &&
-                pros2MiniTrigger &&
-                pros3MiniTrigger &&
-                pros1Tab &&
-                pros2Tab &&
-                pros3Tab
-            ) {
-                applyListeners(pros1, 0)
-                applyListeners(pros2, 1)
-                applyListeners(pros3, 2)
-                applyListeners(pros1MiniTrigger, 0)
-                applyListeners(pros2MiniTrigger, 1)
-                applyListeners(pros3MiniTrigger, 2)
-                applyListeners(pros1Tab, 0)
-                applyListeners(pros2Tab, 1)
-                applyListeners(pros3Tab, 2)
-            }
-
-            const radioButtonPrevious = document.getElementById(
-                'radio-button-previous'
-            )
-            const radioButtonPause =
-                document.getElementById('radio-button-pause')
-            const radioButtonPlay = document.getElementById('radio-button-play')
-            document.getElementById('radio-button-pause')
-            const radioButtonNext = document.getElementById('radio-button-next')
-            const radioButtonSpeed =
-                document.getElementById('radio-button-speed')
-
-            if (radioButtonPrevious && radioButtonPause && radioButtonNext) {
-                radioButtonPrevious.addEventListener('click', () => {
-                    slider.goTo(
-                        Math.abs($slideOffset.get() + 1) % slider.numberOfItems
-                    )
-                    console.log(
-                        Math.abs($slideOffset.get() - 1) % slider.numberOfItems
-                    )
-                })
-
-                radioButtonPause.addEventListener('click', () => {
-                    if ($isPlaying) {
-                        slider.pause()
-                        radioButtonPause.dataset.play = 'false'
-                    } else {
-                        radioButtonPause.dataset.play = 'true'
-                        slider.play()
-                    }
-                })
-
-                radioButtonNext.addEventListener('click', () => {
-                    slider.goTo($slideOffset.get() % slider.numberOfItems)
-                })
-            }
-
-            // slider.goTo(0)
-        </script>
-    </div>
-
     <LiquidMarblingBG>
-        <div
-            class="w-full lg:h-[25vh] lg:block slider-section group hidden"
-            id="pros-list"
-            data-current="0"
-        >
+        <div class="w-full lg:h-[25vh] lg:block slider-section hidden">
             <div
                 class="container grid items-start w-full px-4 md:px-6 lg:grid-cols-3 lg:gap-12"
             >
@@ -298,7 +87,7 @@ colored bg for cards:
                         slot="icon"
                     >
                         <path
-                            class="group-data-[current=0]:fill-green-400 fill-transparent transition-colors"
+                            class="fill-transparent transition-colors"
                             d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"
                         ></path>
                         <path
@@ -327,11 +116,11 @@ colored bg for cards:
                     >
                         <path d="M12 4V2"></path>
                         <path
-                            class="group-data-[current=1]:fill-orange-400 fill-transparent transition-colors"
+                            class="fill-transparent transition-colors"
                             d="M5 10v4a7.004 7.004 0 0 0 5.277 6.787c.412.104.802.292 1.102.592L12 22l.621-.621c.3-.3.69-.488 1.102-.592A7.003 7.003 0 0 0 19 14v-4"
                         ></path>
                         <path
-                            class="group-data-[current=1]:fill-orange-900 fill-transparent transition-colors"
+                            class="fill-transparent transition-colors"
                             d="M12 4C8 4 4.5 6 4 8c-.243.97-.919 1.952-2 3 1.31-.082 1.972-.29 3-1 .54.92.982 1.356 2 2 1.452-.647 1.954-1.098 2.5-2 .595.995 1.151 1.427 2.5 2 1.31-.621 1.862-1.058 2.5-2 .629.977 1.162 1.423 2.5 2 1.209-.548 1.68-.967 2-2 1.032.916 1.683 1.157 3 1-1.297-1.036-1.758-2.03-2-3-.5-2-4-4-8-4Z"
                         ></path>
                     </svg>
@@ -346,7 +135,7 @@ colored bg for cards:
                         xmlns="http://www.w3.org/2000/svg"
                         xmlns:xlink="http://www.w3.org/1999/xlink"
                         version="1.1"
-                        class="w-8 h-8 text-primary fill-transparent transition-colors group-data-[current=2]:bg-white rounded-full"
+                        class="w-8 h-8 text-primary fill-transparent transition-colors rounded-full"
                         viewBox="0 0 512 512"
                         xml:space="preserve"
                         slot="icon"
@@ -373,73 +162,60 @@ colored bg for cards:
                     <div
                         class="object-cover mx-auto overflow-hidden bg-neutral-200 rounded-t-xl size-full"
                     >
-                        <!-- <canvas id={`canvas3d`}></canvas> -->
+                        <canvas id="sliderCanvas"></canvas>
 
                         <script>
                             /*  emitEvent: ƒ emitEvent(s)
-                        emitEventReverse: ƒ emitEventReverse(s)
-                        intensity: undefined
-                        name: "CUCKmber"
-                        page: "Scene 1"
-                        parentUuid: "2d3a9611-bfbb-43b3-ab02-adb4eaada2f2"
-                        position: E {
-                            x: 1.9653399007029635, 
-                            y: 1.054589867591858, 
-                            z: -0.24195627868175507
-                        }
-                        rotation: ir {
-                            "isEuler": true,
-                            "_x": 2.8697173598094836,
-                            "_y": 1.1120978401053763,
-                            "_z": 1.6311621098990423,
-                            "_order": "XYZ"
-                        }
-                        scale: E {
-                            x: 1.856998085975647, 
-                            y: 0.5777410864830017, 
-                            z: 0.5777410268783569
-                        }
-                        type: "Mesh"
-                        uuid: "671f7e04-23c2-4bff-8bff-e93e13d76448"
-                        visible: bool                                        */
+                    emitEventReverse: ƒ emitEventReverse(s)
+                    intensity: undefined
+                    name: "CUCKmber"
+                    page: "Scene 1"
+                    parentUuid: "2d3a9611-bfbb-43b3-ab02-adb4eaada2f2"
+                    position: E {
+                        x: 1.9653399007029635, 
+                        y: 1.054589867591858, 
+                        z: -0.24195627868175507
+                    }
+                    rotation: ir {
+                        "isEuler": true,
+                        "_x": 2.8697173598094836,
+                        "_y": 1.1120978401053763,
+                        "_z": 1.6311621098990423,
+                        "_order": "XYZ"
+                    }
+                    scale: E {
+                        x: 1.856998085975647, 
+                        y: 0.5777410864830017, 
+                        z: 0.5777410268783569
+                    }
+                    type: "Mesh"
+                    uuid: "671f7e04-23c2-4bff-8bff-e93e13d76448"
+                    visible: bool                                        */
 
-                            // import { Application } from '@splinetool/runtime'
-                            // import scope from 'astro:scope'
+                            import { Application } from '@splinetool/runtime'
+                            import scope from 'astro:scope'
 
-                            // const CUCK_SCENE_URI =
-                            //     'https://prod.spline.design/LCB0iCzduGXLMKYX/scene.splinecode'
-                            // const HOVER_SCENE_URI =
-                            //     'https://prod.spline.design/qwFBCPU8opEFsdXi/scene.splinecode'
+                            const canvasHero =
+                                'https://prod.spline.design/bd84XkZwK1O-937n/scene.splinecode'
 
-                            // const canvas = document.getElementById(
-                            //     `canvas3d`
-                            // ) as HTMLCanvasElement | null
-
-                            // if (canvas) {
-                            //     const app = new Application(canvas)
-                            //     app.load(HOVER_SCENE_URI).then(() => {
-                            //         const CUCK = app.findObjectById(
-                            //             '671f7e04-23c2-4bff-8bff-e93e13d76448'
-                            //         )
-
-                            //         if (!CUCK) return
-
-                            //         console.log(CUCK)
-
-                            //         CUCK.position.x += Math.random() * 1
-                            //         app.setSize(550, 550)
-                            //     })
-                            // }
+                            const canvas = document.getElementById(
+                                'sliderCanvas'
+                            ) as HTMLCanvasElement
+                            const app = new Application(canvas)
+                            app.load(canvasHero).then(() => {
+                                const pack = app.findObjectById(
+                                    'b070972b-2e02-4816-9a42-f2307981f79b'
+                                )
+                            })
                         </script>
                     </div>
                     <div class="relative z-10 lg:hidden">
                         <div
-                            class="grid group px-4 py-6 transition-all duration-500 bg-white border-b border-slate-100 demo-dark:bg-slate-800 demo-dark:border-slate-500 sm:px-10 sm:py-8 lg:p-6 xl:p-10 xl:pb-8 [grid-template-areas:'stack']"
+                            class="grid px-4 py-6 transition-all duration-500 bg-white border-b border-slate-100 demo-dark:bg-slate-800 demo-dark:border-slate-500 sm:px-10 sm:py-8 lg:p-6 xl:p-10 xl:pb-8 [grid-template-areas:'stack']"
                             id="pros-radio"
-                            data-current="0"
                         >
                             <div
-                                class="[grid-area:stack] group-data-[current=0]:opacity-100 opacity-0 transition-opacity pointer-events-none group-data-[current=0]:pointer-events-auto"
+                                class="[grid-area:stack] opacity-0 transition-opacity pointer-events-none"
                             >
                                 <SliderCard
                                     name="100% Качественно"
@@ -470,7 +246,7 @@ colored bg for cards:
                                 </SliderCard>
                             </div>
                             <div
-                                class="[grid-area:stack] group-data-[current=1]:opacity-100 opacity-0 transition-opacity pointer-events-none group-data-[current=1]:pointer-events-auto"
+                                class="[grid-area:stack] opacity-0 transition-opacity pointer-events-none"
                             >
                                 <SliderCard
                                     name="Надежные"
@@ -504,7 +280,7 @@ colored bg for cards:
                                 </SliderCard>
                             </div>
                             <div
-                                class="[grid-area:stack] group-data-[current=2]:opacity-100 opacity-0 transition-opacity pointer-events-none group-data-[current=2]:pointer-events-auto"
+                                class="[grid-area:stack] opacity-0 transition-opacity pointer-events-none"
                             >
                                 <SliderCard
                                     name="Устойчиво"

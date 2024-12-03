@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>WebGPU Shader Effect</title>
+        <style>
+            body {
+                margin: 0;
+            }
+            canvas {
+                display: block;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas id="gpuCanvas"></canvas>
+        <script>
+            // app.js
+            async function init() {
+                // Check if WebGPU is supported
+                if (!navigator.gpu) {
+                    console.error('WebGPU is not supported. Please use a compatible browser.')
+                    return
+                }
+
+                const canvas = document.getElementById('gpuCanvas')
+                const context = canvas.getContext('webgpu')
+
+                // Configure canvas size
+                const devicePixelRatio = window.devicePixelRatio || 1
+                const width = window.innerWidth * devicePixelRatio
+                const height = window.innerHeight * devicePixelRatio
+                canvas.width = width
+                canvas.height = height
+
+                // Configure GPU device and swap chain
+                const adapter = await navigator.gpu.requestAdapter()
+                const device = await adapter.requestDevice()
+
+                context.configure({
+                    device: device,
+                    format: 'bgra8unorm',
+                    size: [width, height],
+                })
+
+                // Create uniform buffer
+                const uniformData = {
+                    uf_resolution: [width, height],
+                    uf_time: 0,
+                    uf_colors: [
+                        [0.5, 0.8, 1.0],
+                        [0.1, 0.4, 0.8],
+                        [0.9, 0.9, 1.0],
+                    ],
+                    uf_offset_x: 0,
+                    uf_offset_y: 0,
+                    uf_distortion_iterations: 20,
+                    uf_scale: 1,
+                    uf_circle_limit: 1,
+                    uf_fog_of_war: 1,
+                    uf_vertical_animation_speed: 1,
+                    uf_horizontal_animation_speed: 1,
+                    uf_interference: 1,
+                    uf_fading: 1,
+                    uf_cut_x: width / 2,
+                    uf_cut_y: height / 2,
+                    uf_top: 1,
+                    uf_left: 1,
+                }
+
+                const uniformBuffer = device.createBuffer({
+                    size: uniformData.uf_resolution.length * Float32Array.BYTES_PER_ELEMENT + uniformData.uf_colors.length * Float32Array.BYTES_PER_ELEMENT * 3 + Float32Array.BYTES_PER_ELEMENT * (Object.keys(uniformData).length - 2),
+                    usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+                })
+
+                // Update the uniform buffer with initial data
+                function updateUniforms() {
+                    const data = new Float32Array([
+                        ...uniformData.uf_resolution,
+                        uniformData.uf_time,
+                        ...uniformData.uf_colors.flat(),
+                        uniformData.uf_offset_x,
+                        uniformData.uf_offset_y,
+                        uniformData.uf_distortion_iterations,
+                        uniformData.uf_scale,
+                        uniformData.uf_circle_limit,
+                        uniformData.uf_fog_of_war,
+                        uniformData.uf_vertical_animation_speed,
+                        uniformData.uf_horizontal_animation_speed,
+                        uniformData.uf_interference,
+                        uniformData.uf_fading,
+                        uniformData.uf_cut_x,
+                        uniformData.uf_cut_y,
+                        uniformData.uf_top,
+                        uniformData.uf_left,
+                    ])
+
+                    device.queue.writeBuffer(uniformBuffer, 0, data)
+                }
+
+                // Create shader module
+                const shaderCode = `
+      @group(0) @binding(0) var<uniform> uf_resolution: vec2<f32>;
+      @group(0) @binding(1) var<uniform> uf_time: f32;
+      @group(0) @binding(2) var<uniform> uf_colors: array<vec3<f32>, 3>;
+      @group(0) @binding(3) var<uniform> uf_offset_x: f32;
+      @group(0) @binding(4) var<uniform> uf_offset_y: f32;
+      @group(0) @binding(5) var<uniform> uf_distortion_iterations: i32;
+      @group(0) @binding(6) var<uniform> uf_scale: f32;
+      @group(0) @binding(7) var<uniform> uf_circle_limit: f32;
+      @group(0) @binding(8) var<uniform> uf_fog_of_war: f32;
+      @group(0) @binding(9) var<uniform> uf_vertical_animation_speed: f32;
+      @group(0) @binding(10) var<uniform> uf_horizontal_animation_speed: f32;
+      @group(0) @binding(11) var<uniform> uf_interference: f32;
+      @group(0) @binding(12) var<uniform> uf_fading: f32;
+      @group(0) @binding(13) var<uniform> uf_cut_x: f32;
+      @group(0) @binding(14) var<uniform> uf_cut_y: f32;
+      @group(0) @binding(15) var<uniform> uf_top: i32;
+      @group(0) @binding(16) var<uniform> uf_left: i32;
+
+      var color1 = vec3<f32>(0.5, 0.8, 1.0);
+      var color2 = vec3<f32>(0.1, 0.4, 0.8);
+      var color3 = vec3<f32>(0.9, 0.9, 1.0);
+
+      @fragment
+      fn main(@location(0) fragCoord: vec2<f32>) -> @location(0) vec4<f32> {
+          let coord = (fragCoord / uf_scale - (uf_resolution * 0.5)) / min(uf_resolution.y, uf_resolution.x);
+          var initialLen = length(coord);
+
+          var len: f32;
+
+          for (var i = 0; i < ITERATION_MAX; i += 1) {
+              len = length(vec2<f32>(
+                  coord.x - cos(uf_time * uf_vertical_animation_speed) + (uf_offset_x / 1000.0),
+                  coord.y - sin(uf_time * uf_horizontal_animation_speed) + (uf_offset_y / 1000.0)
+              ));
+
+              coord.x -= cos(coord.y + sin(len)) + cos(uf_time * uf_vertical_animation_speed);
+              coord.y += sin(coord.x + cos(len)) + sin(uf_time * uf_horizontal_animation_speed);
+
+              if (i >= uf_distortion_iterations) {
+                  break;
+              }
+          }
+
+          var baseColor = mix(color1, color2, cos(len));
+          baseColor = mix(baseColor, color3, 0.0);
+
+          let alpha = exp(-(len - (uf_circle_limit * PI)) * uf_fog_of_war);
+
+          if ((coord.y > -uf_cut_y && uf_top == 1) || (coord.x < uf_cut_x && uf_left == 1)) {
+              let cutAlpha = min(max(exp(-(coord.y + uf_cut_y) * 0.8) * 4.0, exp((coord.x - uf_cut_x) * 0.8)), alpha);
+              return vec4<f32>(baseColor, cutAlpha);
+          }
+
+          return vec4<f32>(baseColor, alpha);
+      }
+    `
+
+                const shaderModule = device.createShaderModule({ code: shaderCode })
+
+                // Create pipeline layout and render pipeline
+                const pipelineLayout = device.createPipelineLayout({
+                    bindGroupLayouts: [],
+                })
+
+                const pipeline = device.createRenderPipeline({
+                    layout: pipelineLayout,
+                    vertexStage: {
+                        module: shaderModule,
+                        entryPoint: 'main',
+                    },
+                    fragmentStage: {
+                        module: shaderModule,
+                        entryPoint: 'main',
+                        targets: [
+                            {
+                                format: 'bgra8unorm',
+                            },
+                        ],
+                    },
+                    primitiveTopology: 'triangle-list',
+                    colorStates: [
+                        {
+                            format: 'bgra8unorm',
+                        },
+                    ],
+                })
+
+                // Create command encoder and render pass descriptor
+                function render() {
+                    uniformData.uf_time += 1 / 60 // Update time for animation
+                    updateUniforms()
+
+                    const commandEncoder = device.createCommandEncoder()
+
+                    const textureView = context.getCurrentTexture().createView()
+
+                    const passEncoder = commandEncoder.beginRenderPass({
+                        colorAttachments: [
+                            {
+                                view: textureView,
+                                loadOp: 'clear',
+                                clearValue: { r: 0, g: 0, b: 0, a: 1 },
+                                storeOp: 'store',
+                            },
+                        ],
+                    })
+
+                    passEncoder.setPipeline(pipeline)
+
+                    // Bind uniforms
+                    passEncoder.setBindGroup(
+                        0,
+                        device.createBindGroup({
+                            layout: pipelineLayout.getBindGroupLayout(0),
+                            entries: [
+                                { binding: 0, resource: { buffer: uniformBuffer } },
+                                // Add other bindings as needed...
+                            ],
+                        })
+                    )
+
+                    passEncoder.drawFullscreenQuad() // Draw a fullscreen quad
+
+                    passEncoder.endPass()
+
+                    device.queue.submit([commandEncoder.finish()])
+
+                    requestAnimationFrame(render)
+                }
+
+                render()
+            }
+
+            window.onload = init
+        </script>
+    </body>
+</html>

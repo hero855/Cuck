@@ -35,7 +35,7 @@ import '@/styles/globals.css'
 </style>
 
 <script>
-    import Konva from 'konva'
+    // import Konva from 'konva'
     import chroma from 'chroma-js'
 
     const NUM_OF_STARS = 20
@@ -105,7 +105,7 @@ import '@/styles/globals.css'
         })
     }
 
-    starArray.forEach((star) => {
+    starArray.forEach(star => {
         star.links.forEach(() => {
             const line = new Konva.Line()
             starLinks.push(line)
@@ -119,10 +119,10 @@ import '@/styles/globals.css'
     stage.add(linksLayer)
     stage.add(starsLayer)
 
-    const anim = new Konva.Animation((frame) => {
+    const anim = new Konva.Animation(frame => {
         if (!frame) return
 
-        starArray.forEach((star) => {
+        starArray.forEach(star => {
             if (
                 star.konvaObj.y() < 0 ||
                 star.konvaObj.y() > stage.height() ||

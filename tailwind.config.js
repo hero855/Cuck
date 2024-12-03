@@ -79,6 +79,12 @@ module.exports = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+      maskImage: {
+        "coolity1": "linear-gradient(black,transparent,black),linear-gradient(to_right,black,transparent,black),radial-gradient(ellipse_at_20%_70%,black_0%,transparent_20% ),radial-gradient(ellipse_at_70%_20%,black_0%,transparent_20%),radial-gradient(ellipse_at_50%_50%,black_0%,transparent_20%),radial-gradient(ellipse_at_20%_10%,black_0%,transparent_20%)",
+      },
+      backgroundImage: {
+        "coolity": "linear-gradient(black, transparent, black), linear-gradient(to right, black, transparent, black), radial-gradient( ellipse at 20% 70%, black 0%,transparent 20% ), radial-gradient( ellipse at 70% 20%, black 0%, transparent 20% ), radial-gradient( ellipse at 50% 50%, black 0%, transparent 20% ), radial-gradient( ellipse at 20% 10%, black 0%, transparent 20% )",
+      }
     },
   },
   plugins: [require("tailwindcss-animate"), require('tailwind-container-break-out')],

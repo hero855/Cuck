@@ -79,11 +79,14 @@ import '@/styles/globals.css'
                 const canvasHero =
                     'https://prod.spline.design/7yrNv47D5X8Y00uP/scene.splinecode'
 
+                const bottle =
+                    'https://prod.spline.design/h4YwfV706FBHN5cy/scene.splinecode'
+
                 const canvas = document.getElementById(
                     'heroCanvas'
                 ) as HTMLCanvasElement
                 const app = new Application(canvas)
-                app.load(canvasHero).then(() => {
+                app.load(bottle).then(() => {
                     const pack = app.findObjectById(
                         'b070972b-2e02-4816-9a42-f2307981f79b'
                     )
